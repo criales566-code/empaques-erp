@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: #0a0a0f;
+  --color-surface: #111118;
+  --color-surface-2: #1a1a24;
+  --color-border: #2a2a38;
+  --color-primary: #6366f1;
+  --color-primary-light: #818cf8;
+  --color-secondary: #10b981;
+  --color-accent: #f59e0b;
+  --color-danger: #ef4444;
+  --color-text: #f1f5f9;
+  --color-muted: #64748b;
+
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0a0a0f;
+  color: #f1f5f9;
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111118;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a38;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a50;
+}
+
+/* Glass morphism */
+.glass {
+  background: rgba(26, 26, 36, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+/* Glow effects */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+/* Animated gradient border */
+@keyframes gradient-border {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-border {
+  background: linear-gradient(135deg, #6366f1, #10b981, #f59e0b);
+  background-size: 300% 300%;
+  animation: gradient-border 4s ease infinite;
+  padding: 1px;
+  border-radius: 12px;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease forwards;
+}
+
+/* Pulse animation for badges */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
 }
