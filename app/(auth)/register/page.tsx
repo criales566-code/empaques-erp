@@ -27,14 +27,21 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { data: { full_name: fullName } }
       })
       if (error) throw error
-      toast.success('¡Cuenta creada! Verifica tu correo para continuar.')
-      router.push('/login')
+
+      if (data?.session) {
+        toast.success('¡Registro exitoso! Iniciando sesión...')
+        router.push('/')
+        router.refresh()
+      } else {
+        toast.success('¡Cuenta creada! Verifica tu correo para continuar.')
+        router.push('/login')
+      }
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Error al registrar')
     } finally {
