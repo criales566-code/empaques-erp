@@ -1,4 +1,4 @@
-import { LucideIcon, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface StatsCardProps {
@@ -12,56 +12,73 @@ interface StatsCardProps {
 
 const colorMap = {
   indigo: {
-    icon: 'text-indigo-600',
-    iconBg: 'bg-indigo-50',
-    accent: 'bg-indigo-500',
+    gradient: 'from-indigo-500 to-indigo-600',
+    light: 'bg-indigo-50',
+    text: 'text-indigo-600',
+    badge: 'bg-indigo-100 text-indigo-700',
+    ring: 'ring-indigo-100',
   },
   emerald: {
-    icon: 'text-emerald-600',
-    iconBg: 'bg-emerald-50',
-    accent: 'bg-emerald-500',
+    gradient: 'from-emerald-500 to-emerald-600',
+    light: 'bg-emerald-50',
+    text: 'text-emerald-600',
+    badge: 'bg-emerald-100 text-emerald-700',
+    ring: 'ring-emerald-100',
   },
   amber: {
-    icon: 'text-amber-600',
-    iconBg: 'bg-amber-50',
-    accent: 'bg-amber-500',
+    gradient: 'from-amber-500 to-orange-500',
+    light: 'bg-amber-50',
+    text: 'text-amber-600',
+    badge: 'bg-amber-100 text-amber-700',
+    ring: 'ring-amber-100',
   },
   red: {
-    icon: 'text-red-600',
-    iconBg: 'bg-red-50',
-    accent: 'bg-red-500',
+    gradient: 'from-red-500 to-rose-600',
+    light: 'bg-red-50',
+    text: 'text-red-600',
+    badge: 'bg-red-100 text-red-700',
+    ring: 'ring-red-100',
   },
   blue: {
-    icon: 'text-blue-600',
-    iconBg: 'bg-blue-50',
-    accent: 'bg-blue-500',
+    gradient: 'from-blue-500 to-blue-600',
+    light: 'bg-blue-50',
+    text: 'text-blue-600',
+    badge: 'bg-blue-100 text-blue-700',
+    ring: 'ring-blue-100',
   },
 }
 
 export function StatsCard({ title, value, description, icon: Icon, color, trend }: StatsCardProps) {
-  const colors = colorMap[color]
-  const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus
-  const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-slate-300'
+  const c = colorMap[color]
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 cursor-default overflow-hidden flex">
-      {/* Colored left accent bar */}
-      <div className={cn('w-1 flex-shrink-0', colors.accent)} />
-
-      <div className="flex-1 p-5">
-        <div className="flex items-start justify-between mb-4">
-          <div className={cn('p-2 rounded-lg', colors.iconBg)}>
-            <Icon className={cn('w-4 h-4', colors.icon)} />
-          </div>
-          <TrendIcon className={cn('w-4 h-4 mt-0.5', trendColor)} />
+    <div className={cn(
+      'rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 p-5 cursor-default group ring-4 ring-transparent hover:ring-4',
+      `hover:${c.ring}`
+    )}>
+      <div className="flex items-start justify-between mb-5">
+        <div className={cn('w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-sm', c.gradient)}>
+          <Icon className="w-6 h-6 text-white" />
         </div>
-
-        <p className="text-[1.6rem] font-bold text-slate-900 tracking-tight leading-none">{value}</p>
-        <p className="text-xs font-semibold text-slate-500 mt-2 uppercase tracking-wide">{title}</p>
-        {description && (
-          <p className="text-xs text-slate-400 mt-0.5">{description}</p>
+        {trend && trend !== 'neutral' && (
+          <div className={cn(
+            'flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full',
+            trend === 'up' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
+          )}>
+            {trend === 'up'
+              ? <TrendingUp className="w-3 h-3" />
+              : <TrendingDown className="w-3 h-3" />
+            }
+            {trend === 'up' ? 'Activo' : 'Bajo'}
+          </div>
         )}
       </div>
+
+      <p className="text-3xl font-extrabold text-slate-900 tracking-tight leading-none">{value}</p>
+      <p className="text-sm font-medium text-slate-500 mt-2">{title}</p>
+      {description && (
+        <p className="text-xs text-slate-400 mt-1">{description}</p>
+      )}
     </div>
   )
 }
