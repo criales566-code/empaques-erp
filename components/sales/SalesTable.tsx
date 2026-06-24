@@ -49,7 +49,7 @@ export function SalesTable({ sales }: { sales: Sale[] }) {
 
   if (sales.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-slate-500">
+      <div className="flex flex-col items-center justify-center py-16 text-slate-400">
         <ShoppingCart className="w-12 h-12 mb-3 opacity-40" />
         <p className="text-sm font-medium">No hay ventas registradas</p>
         <p className="text-xs mt-1">Crea tu primera venta para comenzar</p>
@@ -59,40 +59,40 @@ export function SalesTable({ sales }: { sales: Sale[] }) {
 
   return (
     <>
-      <div className="rounded-xl border border-[#2a2a38] overflow-hidden">
+      <div className="rounded-xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#2a2a38] bg-[#0d0d14]">
-                <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Fecha</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Cliente</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider hidden md:table-cell">Pago</th>
-                <th className="text-right px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Total</th>
-                <th className="text-right px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider hidden sm:table-cell">Utilidad</th>
-                <th className="text-right px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-slate-200 bg-slate-50">
+                <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Fecha</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Cliente</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider hidden md:table-cell">Pago</th>
+                <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Total</th>
+                <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider hidden sm:table-cell">Utilidad</th>
+                <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#2a2a38]">
+            <tbody className="divide-y divide-slate-100">
               {sales.map(sale => (
-                <tr key={sale.id} className="bg-[#111118] hover:bg-[#1a1a24] transition-colors">
-                  <td className="px-4 py-3 text-slate-300 text-xs">
+                <tr key={sale.id} className="bg-white hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 text-slate-500 text-xs">
                     {format(new Date(sale.created_at), 'dd MMM yyyy HH:mm', { locale: es })}
                   </td>
-                  <td className="px-4 py-3 font-medium text-white">{sale.customer_name}</td>
+                  <td className="px-4 py-3 font-medium text-slate-900">{sale.customer_name}</td>
                   <td className="px-4 py-3 hidden md:table-cell">
                     <Badge variant={PAYMENT_VARIANTS[sale.payment_method] || 'default'}>
                       {PAYMENT_LABELS[sale.payment_method] || sale.payment_method}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-right font-semibold text-white">{formatCOP(sale.total)}</td>
+                  <td className="px-4 py-3 text-right font-semibold text-slate-900">{formatCOP(sale.total)}</td>
                   <td className="px-4 py-3 text-right hidden sm:table-cell">
-                    <span className="text-emerald-400 font-medium">{formatCOP(sale.profit)}</span>
+                    <span className="text-emerald-600 font-medium">{formatCOP(sale.profit)}</span>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                      className="text-red-500 hover:text-red-600 hover:bg-red-50"
                       onClick={() => setDeleteId(sale.id)}
                     >
                       <Trash2 className="w-4 h-4" />

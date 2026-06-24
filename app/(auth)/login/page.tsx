@@ -35,7 +35,7 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="border-[#2a2a38] shadow-2xl">
+    <Card className="shadow-sm">
       <CardHeader>
         <CardTitle className="text-xl">Iniciar sesión</CardTitle>
         <CardDescription>Ingresa tus credenciales para acceder al ERP</CardDescription>
@@ -45,7 +45,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <Label htmlFor="email">Correo electrónico</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               <Input
                 id="email"
                 type="email"
@@ -79,9 +79,9 @@ export default function LoginPage() {
           <Button type="submit" className="w-full" disabled={loading} size="lg">
             {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Ingresando...</> : 'Iniciar sesión'}
           </Button>
-          <p className="text-sm text-slate-400 text-center">
+          <p className="text-sm text-slate-500 text-center">
             ¿No tienes cuenta?{' '}
-            <Link href="/register" className="text-indigo-400 hover:text-indigo-300 font-medium">
+            <Link href="/register" className="text-indigo-600 hover:text-indigo-700 font-medium">
               Regístrate
             </Link>
           </p>

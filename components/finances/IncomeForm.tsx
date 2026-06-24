@@ -33,10 +33,10 @@ export function IncomeForm({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-[#2a2a38] bg-[#1a1a24] p-4 space-y-3">
+    <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-white">Nuevo ingreso</h3>
-        <button type="button" onClick={onClose} className="text-slate-400 hover:text-white">
+        <h3 className="text-sm font-medium text-slate-900">Nuevo ingreso</h3>
+        <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
           <X className="w-4 h-4" />
         </button>
       </div>

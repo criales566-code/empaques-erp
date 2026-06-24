@@ -17,8 +17,8 @@ export default async function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Reportes</h1>
-        <p className="text-slate-400 text-sm mt-1">Genera reportes en PDF para imprimir o compartir</p>
+        <h1 className="text-2xl font-bold text-slate-900">Reportes</h1>
+        <p className="text-slate-500 text-sm mt-1">Genera reportes en PDF para imprimir o compartir</p>
       </div>
       <ReportsGenerator
         products={products}

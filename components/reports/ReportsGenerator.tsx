@@ -169,8 +169,9 @@ export function ReportsGenerator({ products, sales, expenses, incomes }: Props) 
       title: 'Inventario',
       description: `${products.length} productos · Valor: ${formatCOP(calculateInventoryValue(products))}`,
       icon: Package,
-      color: 'text-indigo-400',
-      bg: 'bg-indigo-500/10 border-indigo-500/30',
+      color: 'text-indigo-600',
+      bg: 'bg-indigo-50 border-indigo-200',
+      iconBg: 'bg-indigo-100',
       action: generateInventoryPDF,
       btnVariant: 'default' as const,
     },
@@ -178,8 +179,9 @@ export function ReportsGenerator({ products, sales, expenses, incomes }: Props) 
       title: 'Ventas',
       description: `${sales.length} ventas · Total: ${formatCOP(totalSales(sales))} · Utilidad: ${formatCOP(totalProfit(sales))}`,
       icon: ShoppingCart,
-      color: 'text-emerald-400',
-      bg: 'bg-emerald-500/10 border-emerald-500/30',
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50 border-emerald-200',
+      iconBg: 'bg-emerald-100',
       action: generateSalesPDF,
       btnVariant: 'success' as const,
     },
@@ -187,8 +189,9 @@ export function ReportsGenerator({ products, sales, expenses, incomes }: Props) 
       title: 'Flujo de caja',
       description: `Ingresos: ${formatCOP(totalSales(sales) + totalIncomes(incomes))} · Gastos: ${formatCOP(totalExpenses(expenses))}`,
       icon: DollarSign,
-      color: 'text-amber-400',
-      bg: 'bg-amber-500/10 border-amber-500/30',
+      color: 'text-amber-600',
+      bg: 'bg-amber-50 border-amber-200',
+      iconBg: 'bg-amber-100',
       action: generateCashFlowPDF,
       btnVariant: 'outline' as const,
     },
@@ -200,15 +203,15 @@ export function ReportsGenerator({ products, sales, expenses, incomes }: Props) 
         {reportCards.map(card => (
           <div key={card.title} className={`rounded-xl border p-6 ${card.bg}`}>
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2.5 rounded-lg bg-black/20">
+              <div className={`p-2.5 rounded-lg ${card.iconBg}`}>
                 <card.icon className={`w-6 h-6 ${card.color}`} />
               </div>
               <div>
-                <h3 className="font-semibold text-white">Reporte de {card.title}</h3>
-                <p className="text-xs text-slate-400">PDF · Descarga inmediata</p>
+                <h3 className="font-semibold text-slate-900">Reporte de {card.title}</h3>
+                <p className="text-xs text-slate-500">PDF · Descarga inmediata</p>
               </div>
             </div>
-            <p className="text-sm text-slate-400 mb-6 leading-relaxed">{card.description}</p>
+            <p className="text-sm text-slate-600 mb-6 leading-relaxed">{card.description}</p>
             <Button onClick={card.action} variant={card.btnVariant} className="w-full">
               <Download className="w-4 h-4" />
               Descargar PDF
@@ -217,12 +220,12 @@ export function ReportsGenerator({ products, sales, expenses, incomes }: Props) 
         ))}
       </div>
 
-      <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4">
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
           <FileText className="w-4 h-4 text-slate-400" />
-          <h3 className="text-sm font-medium text-white">Información sobre los reportes</h3>
+          <h3 className="text-sm font-medium text-slate-900">Información sobre los reportes</h3>
         </div>
-        <ul className="text-xs text-slate-400 space-y-1.5">
+        <ul className="text-xs text-slate-500 space-y-1.5">
           <li>• Los PDFs se generan con todos los datos actuales del sistema</li>
           <li>• El reporte de inventario incluye la valorización total de cada producto</li>
           <li>• El reporte de ventas incluye utilidad por transacción</li>

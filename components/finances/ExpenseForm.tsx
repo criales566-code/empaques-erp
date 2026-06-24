@@ -45,10 +45,10 @@ export function ExpenseForm({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-[#2a2a38] bg-[#1a1a24] p-4 space-y-3">
+    <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-white">Nuevo gasto</h3>
-        <button type="button" onClick={onClose} className="text-slate-400 hover:text-white">
+        <h3 className="text-sm font-medium text-slate-900">Nuevo gasto</h3>
+        <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -66,7 +66,7 @@ export function ExpenseForm({ onClose }: { onClose: () => void }) {
           <select
             value={category}
             onChange={e => setCategory(e.target.value)}
-            className="flex h-10 w-full rounded-lg border border-[#2a2a38] bg-[#111118] px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+            className="flex h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
           >
             {CATEGORIES.map(cat => (
               <option key={cat.value} value={cat.value}>{cat.label}</option>

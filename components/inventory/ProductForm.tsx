@@ -79,10 +79,10 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-slate-900">
             {product ? 'Editar producto' : 'Nuevo producto'}
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-slate-500 text-sm mt-1">
             {product ? `Editando: ${product.name}` : 'Completa los datos del producto'}
           </p>
         </div>
@@ -91,8 +91,8 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main info */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4 space-y-4">
-            <h2 className="text-sm font-semibold text-white border-b border-[#2a2a38] pb-2">Información básica</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-4 shadow-sm">
+            <h2 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2">Información básica</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2 space-y-2">
                 <Label htmlFor="name">Nombre del producto *</Label>
@@ -128,7 +128,7 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
                   id="category"
                   value={form.category ?? ''}
                   onChange={e => handleChange('category', e.target.value)}
-                  className="flex h-10 w-full rounded-lg border border-[#2a2a38] bg-[#111118] px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  className="flex h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
                 >
                   <option value="">Sin categoría</option>
                   {CATEGORIES.map(cat => (
@@ -153,7 +153,7 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
                   onChange={e => handleChange('description', e.target.value)}
                   placeholder="Descripción del producto..."
                   rows={3}
-                  className="flex w-full rounded-lg border border-[#2a2a38] bg-[#111118] px-3 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 resize-none"
+                  className="flex w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 resize-none"
                 />
               </div>
               <div className="sm:col-span-2 space-y-2">
@@ -168,8 +168,8 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
             </div>
           </div>
 
-          <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4 space-y-4">
-            <h2 className="text-sm font-semibold text-white border-b border-[#2a2a38] pb-2">Precios</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-4 shadow-sm">
+            <h2 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2">Precios</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="cost_price">Precio de costo (COP)</Label>
@@ -197,8 +197,8 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
                 <Label>Margen de ganancia</Label>
                 <div className={`flex h-10 items-center px-3 rounded-lg border font-semibold text-sm ${
                   parseFloat(margin) > 0
-                    ? 'border-emerald-500/30 bg-emerald-500/5 text-emerald-400'
-                    : 'border-[#2a2a38] bg-[#111118] text-slate-400'
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                    : 'border-slate-200 bg-slate-50 text-slate-500'
                 }`}>
                   {margin}%
                 </div>
@@ -209,8 +209,8 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
 
         {/* Sidebar: Stock */}
         <div className="space-y-4">
-          <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4 space-y-4">
-            <h2 className="text-sm font-semibold text-white border-b border-[#2a2a38] pb-2">Stock</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-4 shadow-sm">
+            <h2 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2">Stock</h2>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="stock">Stock actual</Label>
@@ -233,7 +233,7 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
                   value={form.minimum_stock}
                   onChange={e => handleChange('minimum_stock', parseInt(e.target.value) || 0)}
                 />
-                <p className="text-xs text-slate-500">Recibirás alertas cuando el stock baje de este nivel</p>
+                <p className="text-xs text-slate-400">Recibirás alertas cuando el stock baje de este nivel</p>
               </div>
             </div>
           </div>

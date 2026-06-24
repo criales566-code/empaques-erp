@@ -50,7 +50,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="border-[#2a2a38] shadow-2xl">
+    <Card className="shadow-sm">
       <CardHeader>
         <CardTitle className="text-xl">Crear cuenta</CardTitle>
         <CardDescription>Registra tu cuenta para acceder al ERP</CardDescription>
@@ -107,9 +107,9 @@ export default function RegisterPage() {
           <Button type="submit" className="w-full" disabled={loading} size="lg">
             {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Registrando...</> : 'Crear cuenta'}
           </Button>
-          <p className="text-sm text-slate-400 text-center">
+          <p className="text-sm text-slate-500 text-center">
             ¿Ya tienes cuenta?{' '}
-            <Link href="/login" className="text-indigo-400 hover:text-indigo-300 font-medium">
+            <Link href="/login" className="text-indigo-600 hover:text-indigo-700 font-medium">
               Inicia sesión
             </Link>
           </p>

@@ -24,8 +24,8 @@ interface SalesChartProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#1a1a24] border border-[#2a2a38] rounded-lg p-3 shadow-xl">
-        <p className="text-white font-medium text-sm mb-2">{label}</p>
+      <div className="bg-white border border-slate-200 rounded-lg p-3 shadow-lg">
+        <p className="text-slate-900 font-medium text-sm mb-2">{label}</p>
         {payload.map((entry: any) => (
           <p key={entry.name} className="text-xs" style={{ color: entry.color }}>
             {entry.name}: {formatCOPCompact(entry.value)}
@@ -69,27 +69,27 @@ export function SalesChart({ sales, expenses }: SalesChartProps) {
   }, [sales, expenses])
 
   return (
-    <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4">
-      <h3 className="text-sm font-semibold text-white mb-4">Ventas vs Gastos (6 meses)</h3>
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <h3 className="text-sm font-semibold text-slate-900 mb-4">Ventas vs Gastos (6 meses)</h3>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} barGap={4}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#2a2a38" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
           <XAxis
             dataKey="mes"
-            tick={{ fill: '#64748b', fontSize: 11 }}
+            tick={{ fill: '#94a3b8', fontSize: 11 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             tickFormatter={v => formatCOPCompact(v)}
-            tick={{ fill: '#64748b', fontSize: 10 }}
+            tick={{ fill: '#94a3b8', fontSize: 10 }}
             axisLine={false}
             tickLine={false}
             width={70}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99,102,241,0.05)' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99,102,241,0.04)' }} />
           <Legend
-            wrapperStyle={{ fontSize: '11px', color: '#94a3b8', paddingTop: '12px' }}
+            wrapperStyle={{ fontSize: '11px', color: '#64748b', paddingTop: '12px' }}
           />
           <Bar dataKey="Ventas" fill="#6366f1" radius={[4, 4, 0, 0]} />
           <Bar dataKey="Gastos" fill="#ef4444" radius={[4, 4, 0, 0]} />

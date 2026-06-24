@@ -15,8 +15,8 @@ export default async function FinancesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Finanzas</h1>
-        <p className="text-slate-400 text-sm mt-1">Resumen financiero y flujo de caja</p>
+        <h1 className="text-2xl font-bold text-slate-900">Finanzas</h1>
+        <p className="text-slate-500 text-sm mt-1">Resumen financiero y flujo de caja</p>
       </div>
       <FinancesDashboard expenses={expenses} incomes={incomes} sales={sales} />
     </div>

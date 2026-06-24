@@ -73,12 +73,12 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
   }
 
   const kpis = [
-    { label: 'Ventas totales', value: totalSal, color: 'text-indigo-400', icon: TrendingUp, bg: 'bg-indigo-500/10 border-indigo-500/20', isPercent: false },
-    { label: 'Gastos totales', value: totalExp, color: 'text-red-400', icon: TrendingDown, bg: 'bg-red-500/10 border-red-500/20', isPercent: false },
-    { label: 'Ingresos extra', value: totalInc, color: 'text-blue-400', icon: ArrowUpRight, bg: 'bg-blue-500/10 border-blue-500/20', isPercent: false },
-    { label: 'Utilidad neta', value: netProfit, color: netProfit >= 0 ? 'text-emerald-400' : 'text-red-400', icon: DollarSign, bg: netProfit >= 0 ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-red-500/10 border-red-500/20', isPercent: false },
-    { label: 'Flujo de caja', value: netProfit, color: netProfit >= 0 ? 'text-emerald-400' : 'text-red-400', icon: ArrowUpRight, bg: 'bg-[#1a1a24] border-[#2a2a38]', isPercent: false },
-    { label: 'ROI', value: roi, color: roi >= 0 ? 'text-amber-400' : 'text-red-400', icon: PiggyBank, bg: 'bg-amber-500/10 border-amber-500/20', isPercent: true },
+    { label: 'Ventas totales', value: totalSal, color: 'text-indigo-600', icon: TrendingUp, bg: 'bg-indigo-50 border-indigo-100', isPercent: false },
+    { label: 'Gastos totales', value: totalExp, color: 'text-red-600', icon: TrendingDown, bg: 'bg-red-50 border-red-100', isPercent: false },
+    { label: 'Ingresos extra', value: totalInc, color: 'text-blue-600', icon: ArrowUpRight, bg: 'bg-blue-50 border-blue-100', isPercent: false },
+    { label: 'Utilidad neta', value: netProfit, color: netProfit >= 0 ? 'text-emerald-600' : 'text-red-600', icon: DollarSign, bg: netProfit >= 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100', isPercent: false },
+    { label: 'Flujo de caja', value: netProfit, color: netProfit >= 0 ? 'text-emerald-600' : 'text-red-600', icon: ArrowUpRight, bg: 'bg-slate-50 border-slate-200', isPercent: false },
+    { label: 'ROI', value: roi, color: roi >= 0 ? 'text-amber-600' : 'text-red-600', icon: PiggyBank, bg: 'bg-amber-50 border-amber-100', isPercent: true },
   ]
 
   return (
@@ -89,7 +89,7 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
           <div key={kpi.label} className={`rounded-xl border p-3 ${kpi.bg}`}>
             <div className="flex items-center gap-1 mb-2">
               <kpi.icon className={`w-3.5 h-3.5 ${kpi.color}`} />
-              <span className="text-xs text-slate-400 leading-tight">{kpi.label}</span>
+              <span className="text-xs text-slate-500 leading-tight">{kpi.label}</span>
             </div>
             <p className={`text-base font-bold ${kpi.color}`}>
               {kpi.isPercent ? `${kpi.value.toFixed(1)}%` : formatCOP(kpi.value)}
@@ -101,10 +101,10 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
       {/* Two columns */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Expenses */}
-        <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
-              <Receipt className="w-4 h-4 text-red-400" />
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <Receipt className="w-4 h-4 text-red-500" />
               Gastos
             </h2>
             <Button size="sm" variant="outline" onClick={() => setShowExpenseForm(true)}>
@@ -119,27 +119,27 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
           )}
           <div className="space-y-2 max-h-80 overflow-y-auto">
             {expenses.length === 0 ? (
-              <p className="text-sm text-slate-500 text-center py-4">No hay gastos registrados</p>
+              <p className="text-sm text-slate-400 text-center py-4">No hay gastos registrados</p>
             ) : (
               expenses.map(exp => (
-                <div key={exp.id} className="flex items-center justify-between p-3 rounded-lg bg-[#1a1a24] border border-[#2a2a38] group">
+                <div key={exp.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100 group hover:bg-slate-100 transition-colors">
                   <div className="min-w-0">
-                    <p className="text-sm text-white font-medium truncate">{exp.description}</p>
+                    <p className="text-sm text-slate-900 font-medium truncate">{exp.description}</p>
                     <div className="flex items-center gap-2 mt-0.5">
                       <Badge variant="destructive" className="text-xs">
                         {EXPENSE_CATEGORY_LABELS[exp.category] || exp.category}
                       </Badge>
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-slate-400">
                         {format(new Date(exp.created_at), 'dd MMM', { locale: es })}
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 ml-2 flex-shrink-0">
-                    <span className="text-sm font-semibold text-red-400">-{formatCOP(exp.amount)}</span>
+                    <span className="text-sm font-semibold text-red-600">-{formatCOP(exp.amount)}</span>
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300"
+                      className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-600"
                       onClick={() => setDeleteItem({ id: exp.id, type: 'expense' })}
                     >
                       <Trash2 className="w-3 h-3" />
@@ -149,17 +149,17 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
               ))
             )}
           </div>
-          <div className="mt-3 pt-3 border-t border-[#2a2a38] flex justify-between">
-            <span className="text-sm text-slate-400">Total gastos</span>
-            <span className="text-sm font-bold text-red-400">{formatCOP(totalExp)}</span>
+          <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between">
+            <span className="text-sm text-slate-500">Total gastos</span>
+            <span className="text-sm font-bold text-red-600">{formatCOP(totalExp)}</span>
           </div>
         </div>
 
         {/* Incomes */}
-        <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
-              <PiggyBank className="w-4 h-4 text-emerald-400" />
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <PiggyBank className="w-4 h-4 text-emerald-500" />
               Ingresos adicionales
             </h2>
             <Button size="sm" variant="outline" onClick={() => setShowIncomeForm(true)}>
@@ -174,22 +174,22 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
           )}
           <div className="space-y-2 max-h-80 overflow-y-auto">
             {incomes.length === 0 ? (
-              <p className="text-sm text-slate-500 text-center py-4">No hay ingresos adicionales</p>
+              <p className="text-sm text-slate-400 text-center py-4">No hay ingresos adicionales</p>
             ) : (
               incomes.map(inc => (
-                <div key={inc.id} className="flex items-center justify-between p-3 rounded-lg bg-[#1a1a24] border border-[#2a2a38] group">
+                <div key={inc.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100 group hover:bg-slate-100 transition-colors">
                   <div className="min-w-0">
-                    <p className="text-sm text-white font-medium truncate">{inc.description}</p>
-                    <span className="text-xs text-slate-500">
+                    <p className="text-sm text-slate-900 font-medium truncate">{inc.description}</p>
+                    <span className="text-xs text-slate-400">
                       {format(new Date(inc.created_at), 'dd MMM', { locale: es })}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 ml-2 flex-shrink-0">
-                    <span className="text-sm font-semibold text-emerald-400">+{formatCOP(inc.amount)}</span>
+                    <span className="text-sm font-semibold text-emerald-600">+{formatCOP(inc.amount)}</span>
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300"
+                      className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-600"
                       onClick={() => setDeleteItem({ id: inc.id, type: 'income' })}
                     >
                       <Trash2 className="w-3 h-3" />
@@ -199,9 +199,9 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
               ))
             )}
           </div>
-          <div className="mt-3 pt-3 border-t border-[#2a2a38] flex justify-between">
-            <span className="text-sm text-slate-400">Total ingresos adicionales</span>
-            <span className="text-sm font-bold text-emerald-400">{formatCOP(totalInc)}</span>
+          <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between">
+            <span className="text-sm text-slate-500">Total ingresos adicionales</span>
+            <span className="text-sm font-bold text-emerald-600">{formatCOP(totalInc)}</span>
           </div>
         </div>
       </div>

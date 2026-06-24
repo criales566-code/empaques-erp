@@ -109,10 +109,10 @@ export function SaleForm({ products }: { products: Product[] }) {
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
       {/* Product Search */}
       <div className="xl:col-span-2 space-y-4">
-        <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4">
-          <h2 className="text-sm font-semibold text-white mb-3">Buscar productos</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-900 mb-3">Buscar productos</h2>
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             <Input
               placeholder="Buscar por nombre, SKU o código de barras..."
               value={search}
@@ -126,47 +126,47 @@ export function SaleForm({ products }: { products: Product[] }) {
                 key={product.id}
                 type="button"
                 onClick={() => addToCart(product)}
-                className="flex items-center gap-3 p-3 rounded-lg border border-[#2a2a38] hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all text-left group"
+                className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all text-left group"
               >
-                <div className="w-8 h-8 rounded bg-[#2a2a38] flex items-center justify-center flex-shrink-0">
-                  <Package className="w-4 h-4 text-slate-500 group-hover:text-indigo-400" />
+                <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center flex-shrink-0">
+                  <Package className="w-4 h-4 text-slate-400 group-hover:text-indigo-500" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-white truncate">{product.name}</p>
-                  <p className="text-xs text-slate-400">{formatCOP(product.sale_price)} · Stock: {product.stock}</p>
+                  <p className="text-sm font-medium text-slate-900 truncate">{product.name}</p>
+                  <p className="text-xs text-slate-500">{formatCOP(product.sale_price)} · Stock: {product.stock}</p>
                 </div>
-                <Plus className="w-4 h-4 text-slate-500 group-hover:text-indigo-400 flex-shrink-0" />
+                <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-500 flex-shrink-0" />
               </button>
             ))}
             {filtered.length === 0 && (
-              <div className="col-span-2 text-center py-4 text-slate-500 text-sm">No se encontraron productos</div>
+              <div className="col-span-2 text-center py-4 text-slate-400 text-sm">No se encontraron productos</div>
             )}
           </div>
         </div>
 
         {/* Cart */}
-        <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4">
-          <h2 className="text-sm font-semibold text-white mb-3">
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-900 mb-3">
             Carrito ({cart.length} productos)
           </h2>
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+            <div className="flex flex-col items-center justify-center py-8 text-slate-400">
               <ShoppingCart className="w-8 h-8 mb-2 opacity-40" />
               <p className="text-sm">El carrito está vacío</p>
             </div>
           ) : (
             <div className="space-y-2">
               {cart.map(item => (
-                <div key={item.product.id} className="flex items-center gap-3 p-3 rounded-lg bg-[#1a1a24] border border-[#2a2a38]">
+                <div key={item.product.id} className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">{item.product.name}</p>
+                    <p className="text-sm font-medium text-slate-900 truncate">{item.product.name}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-slate-400">Precio:</span>
+                      <span className="text-xs text-slate-500">Precio:</span>
                       <input
                         type="number"
                         value={item.unit_price}
                         onChange={e => updatePrice(item.product.id, parseFloat(e.target.value) || 0)}
-                        className="w-28 h-6 rounded bg-[#111118] border border-[#2a2a38] px-2 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
+                        className="w-28 h-6 rounded border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-400"
                         min="0"
                       />
                     </div>
@@ -175,26 +175,26 @@ export function SaleForm({ products }: { products: Product[] }) {
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.product.id, -1)}
-                      className="w-7 h-7 rounded-md bg-[#2a2a38] hover:bg-[#3a3a50] flex items-center justify-center text-slate-300"
+                      className="w-7 h-7 rounded-md bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600 transition-colors"
                     >
                       <Minus className="w-3 h-3" />
                     </button>
-                    <span className="w-8 text-center text-sm font-medium text-white">{item.quantity}</span>
+                    <span className="w-8 text-center text-sm font-medium text-slate-900">{item.quantity}</span>
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.product.id, 1)}
-                      className="w-7 h-7 rounded-md bg-[#2a2a38] hover:bg-[#3a3a50] flex items-center justify-center text-slate-300"
+                      className="w-7 h-7 rounded-md bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600 transition-colors"
                     >
                       <Plus className="w-3 h-3" />
                     </button>
                   </div>
                   <div className="text-right min-w-[80px]">
-                    <p className="text-sm font-semibold text-white">{formatCOP(item.unit_price * item.quantity)}</p>
+                    <p className="text-sm font-semibold text-slate-900">{formatCOP(item.unit_price * item.quantity)}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => removeFromCart(item.product.id)}
-                    className="text-red-400 hover:text-red-300 p-1"
+                    className="text-red-500 hover:text-red-600 p-1 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -207,8 +207,8 @@ export function SaleForm({ products }: { products: Product[] }) {
 
       {/* Checkout */}
       <div className="space-y-4">
-        <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4 space-y-4">
-          <h2 className="text-sm font-semibold text-white">Datos de la venta</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-4 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-900">Datos de la venta</h2>
           <div className="space-y-2">
             <Label>Cliente (opcional)</Label>
             <Input
@@ -222,7 +222,7 @@ export function SaleForm({ products }: { products: Product[] }) {
             <select
               value={paymentMethod}
               onChange={e => setPaymentMethod(e.target.value)}
-              className="flex h-10 w-full rounded-lg border border-[#2a2a38] bg-[#111118] px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+              className="flex h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
             >
               {PAYMENT_METHODS.map(m => (
                 <option key={m.value} value={m.value}>{m.label}</option>
@@ -236,26 +236,26 @@ export function SaleForm({ products }: { products: Product[] }) {
               onChange={e => setNotes(e.target.value)}
               rows={2}
               placeholder="Notas adicionales..."
-              className="flex w-full rounded-lg border border-[#2a2a38] bg-[#111118] px-3 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 resize-none"
+              className="flex w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 resize-none"
             />
           </div>
         </div>
 
         {/* Order Summary */}
-        <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4 space-y-3">
-          <h2 className="text-sm font-semibold text-white">Resumen</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-900">Resumen</h2>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Subtotal</span>
-              <span className="text-white">{formatCOP(total)}</span>
+              <span className="text-slate-500">Subtotal</span>
+              <span className="text-slate-900">{formatCOP(total)}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Utilidad estimada</span>
-              <span className="text-emerald-400">{formatCOP(profit)}</span>
+              <span className="text-slate-500">Utilidad estimada</span>
+              <span className="text-emerald-600">{formatCOP(profit)}</span>
             </div>
-            <div className="border-t border-[#2a2a38] pt-2 flex justify-between">
-              <span className="font-semibold text-white">Total</span>
-              <span className="font-bold text-xl text-white">{formatCOP(total)}</span>
+            <div className="border-t border-slate-100 pt-2 flex justify-between">
+              <span className="font-semibold text-slate-900">Total</span>
+              <span className="font-bold text-xl text-slate-900">{formatCOP(total)}</span>
             </div>
           </div>
           <Button

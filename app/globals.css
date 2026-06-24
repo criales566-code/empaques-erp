@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0a0a0f;
-  --color-surface: #111118;
-  --color-surface-2: #1a1a24;
-  --color-border: #2a2a38;
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f5f9;
+  --color-border: #e2e8f0;
   --color-primary: #6366f1;
   --color-primary-light: #818cf8;
   --color-secondary: #10b981;
   --color-accent: #f59e0b;
   --color-danger: #ef4444;
-  --color-text: #f1f5f9;
+  --color-text: #0f172a;
   --color-muted: #64748b;
 
   --chart-1: oklch(0.646 0.222 41.116);
@@ -31,8 +31,8 @@ html {
 }
 
 body {
-  background-color: #0a0a0f;
-  color: #f1f5f9;
+  background-color: #f8fafc;
+  color: #0f172a;
   font-family: var(--font-inter), sans-serif;
 }
 
@@ -42,21 +42,21 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #111118;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2a38;
+  background: #cbd5e1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a50;
+  background: #94a3b8;
 }
 
 /* Glass morphism */
 .glass {
-  background: rgba(26, 26, 36, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.15);
 }
 
 /* Glow effects */

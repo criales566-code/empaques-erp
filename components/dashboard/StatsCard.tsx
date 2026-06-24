@@ -12,51 +12,45 @@ interface StatsCardProps {
 
 const colorMap = {
   indigo: {
-    bg: 'bg-indigo-600/10',
-    border: 'border-indigo-500/20',
-    icon: 'text-indigo-400',
-    iconBg: 'bg-indigo-500/10',
-    glow: 'shadow-indigo-500/10',
+    border: 'border-indigo-100',
+    icon: 'text-indigo-600',
+    iconBg: 'bg-indigo-50',
+    glow: 'shadow-indigo-100',
   },
   emerald: {
-    bg: 'bg-emerald-600/5',
-    border: 'border-emerald-500/20',
-    icon: 'text-emerald-400',
-    iconBg: 'bg-emerald-500/10',
-    glow: 'shadow-emerald-500/10',
+    border: 'border-emerald-100',
+    icon: 'text-emerald-600',
+    iconBg: 'bg-emerald-50',
+    glow: 'shadow-emerald-100',
   },
   amber: {
-    bg: 'bg-amber-600/5',
-    border: 'border-amber-500/20',
-    icon: 'text-amber-400',
-    iconBg: 'bg-amber-500/10',
-    glow: 'shadow-amber-500/10',
+    border: 'border-amber-100',
+    icon: 'text-amber-600',
+    iconBg: 'bg-amber-50',
+    glow: 'shadow-amber-100',
   },
   red: {
-    bg: 'bg-red-600/5',
-    border: 'border-red-500/20',
-    icon: 'text-red-400',
-    iconBg: 'bg-red-500/10',
-    glow: 'shadow-red-500/10',
+    border: 'border-red-100',
+    icon: 'text-red-600',
+    iconBg: 'bg-red-50',
+    glow: 'shadow-red-100',
   },
   blue: {
-    bg: 'bg-blue-600/5',
-    border: 'border-blue-500/20',
-    icon: 'text-blue-400',
-    iconBg: 'bg-blue-500/10',
-    glow: 'shadow-blue-500/10',
+    border: 'border-blue-100',
+    icon: 'text-blue-600',
+    iconBg: 'bg-blue-50',
+    glow: 'shadow-blue-100',
   },
 }
 
 export function StatsCard({ title, value, description, icon: Icon, color, trend }: StatsCardProps) {
   const colors = colorMap[color]
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus
-  const trendColor = trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-red-400' : 'text-slate-500'
+  const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-slate-400'
 
   return (
     <div className={cn(
-      'rounded-xl border p-5 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg cursor-default',
-      'bg-[#111118]',
+      'rounded-xl border p-5 bg-white transition-all duration-200 hover:scale-[1.02] hover:shadow-md cursor-default shadow-sm',
       colors.border,
       colors.glow
     )}>
@@ -67,10 +61,10 @@ export function StatsCard({ title, value, description, icon: Icon, color, trend 
         <TrendIcon className={cn('w-4 h-4', trendColor)} />
       </div>
       <div>
-        <p className="text-2xl font-bold text-white tracking-tight">{value}</p>
-        <p className="text-xs font-medium text-slate-400 mt-1">{title}</p>
+        <p className="text-2xl font-bold text-slate-900 tracking-tight">{value}</p>
+        <p className="text-xs font-medium text-slate-500 mt-1">{title}</p>
         {description && (
-          <p className="text-xs text-slate-500 mt-1">{description}</p>
+          <p className="text-xs text-slate-400 mt-1">{description}</p>
         )}
       </div>
     </div>

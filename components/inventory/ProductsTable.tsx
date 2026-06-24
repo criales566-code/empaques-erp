@@ -63,7 +63,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           <Input
             placeholder="Buscar por nombre, SKU o código de barras..."
             value={search}
@@ -77,7 +77,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
             <select
               value={categoryFilter}
               onChange={e => setCategoryFilter(e.target.value)}
-              className="h-10 rounded-lg border border-[#2a2a38] bg-[#111118] px-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+              className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
             >
               <option value="">Todas las categorías</option>
               {categories.map(cat => (
@@ -90,33 +90,33 @@ export function ProductsTable({ products }: { products: Product[] }) {
 
       {/* Table */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-16 text-slate-400">
           <Package className="w-12 h-12 mb-3 opacity-40" />
           <p className="text-sm font-medium">No hay productos</p>
           <p className="text-xs mt-1">Agrega tu primer producto para comenzar</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-[#2a2a38] overflow-hidden">
+        <div className="rounded-xl border border-slate-200 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#2a2a38] bg-[#0d0d14]">
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Producto</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider hidden md:table-cell">SKU / Barcode</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider hidden lg:table-cell">Categoría</th>
-                  <th className="text-right px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Precio</th>
-                  <th className="text-right px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Stock</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-slate-200 bg-slate-50">
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Producto</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider hidden md:table-cell">SKU / Barcode</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider hidden lg:table-cell">Categoría</th>
+                  <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Precio</th>
+                  <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#2a2a38]">
+              <tbody className="divide-y divide-slate-100">
                 {filtered.map(product => (
-                  <tr key={product.id} className="bg-[#111118] hover:bg-[#1a1a24] transition-colors">
+                  <tr key={product.id} className="bg-white hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         {product.image_url ? (
-                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#0d0d14] flex-shrink-0">
+                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                             <Image
                               src={product.image_url}
                               alt={product.name}
@@ -126,20 +126,20 @@ export function ProductsTable({ products }: { products: Product[] }) {
                             />
                           </div>
                         ) : (
-                          <div className="w-10 h-10 rounded-lg bg-[#2a2a38] flex items-center justify-center flex-shrink-0">
-                            <Package className="w-4 h-4 text-slate-500" />
+                          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                            <Package className="w-4 h-4 text-slate-400" />
                           </div>
                         )}
                         <div className="min-w-0">
-                          <p className="font-medium text-white truncate max-w-[150px]">{product.name}</p>
+                          <p className="font-medium text-slate-900 truncate max-w-[150px]">{product.name}</p>
                           {product.supplier && (
-                            <p className="text-xs text-slate-500 truncate">{product.supplier}</p>
+                            <p className="text-xs text-slate-400 truncate">{product.supplier}</p>
                           )}
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell">
-                      <div className="text-xs text-slate-400">
+                      <div className="text-xs text-slate-500">
                         {product.sku && <div>SKU: {product.sku}</div>}
                         {product.barcode && <div>EAN: {product.barcode}</div>}
                       </div>
@@ -151,14 +151,14 @@ export function ProductsTable({ products }: { products: Product[] }) {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div>
-                        <p className="font-medium text-white">{formatCOP(product.sale_price)}</p>
-                        <p className="text-xs text-slate-500">Costo: {formatCOP(product.cost_price)}</p>
+                        <p className="font-medium text-slate-900">{formatCOP(product.sale_price)}</p>
+                        <p className="text-xs text-slate-400">Costo: {formatCOP(product.cost_price)}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div>
-                        <p className="font-medium text-white">{product.stock}</p>
-                        <p className="text-xs text-slate-500">Mín: {product.minimum_stock}</p>
+                        <p className="font-medium text-slate-900">{product.stock}</p>
+                        <p className="text-xs text-slate-400">Mín: {product.minimum_stock}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3">{getStockBadge(product)}</td>
@@ -172,7 +172,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          className="text-red-500 hover:text-red-600 hover:bg-red-50"
                           onClick={() => setDeleteId(product.id)}
                           title="Eliminar"
                         >

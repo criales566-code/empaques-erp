@@ -122,7 +122,7 @@ export default function BarcodeScannerInner() {
   return (
     <div className="max-w-lg mx-auto space-y-4">
       {/* Camera viewfinder */}
-      <div className="relative rounded-2xl overflow-hidden border border-[#2a2a38] bg-[#0d0d14] aspect-[4/3]">
+      <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 aspect-[4/3]">
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
@@ -142,7 +142,7 @@ export default function BarcodeScannerInner() {
               <div className="absolute inset-x-2 h-0.5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent shadow-[0_0_8px_rgba(99,102,241,0.8)] animate-bounce" style={{ top: '50%' }} />
             </div>
             <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-              <span className="text-xs text-indigo-300 bg-black/50 px-3 py-1 rounded-full">Apunta al código de barras</span>
+              <span className="text-xs text-indigo-200 bg-black/60 px-3 py-1 rounded-full">Apunta al código de barras</span>
             </div>
           </div>
         )}
@@ -150,7 +150,7 @@ export default function BarcodeScannerInner() {
         {/* Idle state */}
         {!isActive && scanState === 'idle' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-            <div className="w-20 h-20 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center">
               <ScanBarcode className="w-10 h-10 text-indigo-400" />
             </div>
             <p className="text-slate-400 text-sm">Cámara inactiva</p>
@@ -177,10 +177,10 @@ export default function BarcodeScannerInner() {
               <>
                 <AlertCircle className="w-16 h-16 text-amber-400" />
                 <p className="text-white font-semibold">Producto no encontrado</p>
-                <p className="text-slate-400 text-xs">Abriendo formulario de creación...</p>
+                <p className="text-slate-300 text-xs">Abriendo formulario de creación...</p>
               </>
             )}
-            <code className="text-xs text-slate-300 bg-[#1a1a24] px-3 py-1 rounded-lg font-mono">{scannedCode}</code>
+            <code className="text-xs text-slate-200 bg-black/50 px-3 py-1 rounded-lg font-mono">{scannedCode}</code>
           </div>
         )}
       </div>
@@ -212,16 +212,16 @@ export default function BarcodeScannerInner() {
 
       {/* Instructions */}
       {(scanState === 'idle' || scanState === 'error') && (
-        <div className="rounded-xl border border-[#2a2a38] bg-[#111118] p-4 space-y-2">
-          <h3 className="text-sm font-medium text-white">Cómo usar el escáner</h3>
-          <ol className="text-xs text-slate-400 space-y-1.5 list-decimal list-inside">
-            <li>Haz clic en <strong className="text-slate-300">"Iniciar escáner"</strong></li>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-2 shadow-sm">
+          <h3 className="text-sm font-medium text-slate-900">Cómo usar el escáner</h3>
+          <ol className="text-xs text-slate-500 space-y-1.5 list-decimal list-inside">
+            <li>Haz clic en <strong className="text-slate-700">"Iniciar escáner"</strong></li>
             <li>Permite el acceso a la cámara en el navegador</li>
             <li>Apunta al código de barras del producto</li>
-            <li>Si el producto <strong className="text-emerald-400">existe</strong>: irás a editarlo</li>
-            <li>Si <strong className="text-amber-400">no existe</strong>: se crea con el código precargado</li>
+            <li>Si el producto <strong className="text-emerald-600">existe</strong>: irás a editarlo</li>
+            <li>Si <strong className="text-amber-600">no existe</strong>: se crea con el código precargado</li>
           </ol>
-          <p className="text-xs text-amber-400/80 mt-2">⚠ Requiere <strong>HTTPS</strong> y permiso de cámara</p>
+          <p className="text-xs text-amber-600 mt-2">⚠ Requiere <strong>HTTPS</strong> y permiso de cámara</p>
         </div>
       )}
     </div>
