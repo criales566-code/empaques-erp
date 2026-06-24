@@ -1,32 +1,42 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { BrowserMultiFormatReader } from '@zxing/browser'
 import { NotFoundException } from '@zxing/library'
 import { getProductByBarcode } from '@/lib/actions/products'
-import { Button } from '@/components/ui/button'
-import { Camera, CameraOff, RefreshCw, CheckCircle, AlertCircle, ScanBarcode, FlipHorizontal } from 'lucide-react'
+import {
+  Camera,
+  CameraOff,
+  RefreshCw,
+  CheckCircle2,
+  AlertCircle,
+  ScanBarcode,
+  FlipHorizontal,
+  Search,
+  Loader2,
+} from 'lucide-react'
 import { toast } from 'sonner'
+import type { ScannerCameraProps, ScanStatus } from './types'
 
-type ScanState = 'idle' | 'scanning' | 'found' | 'not-found' | 'error'
-
-export default function BarcodeScannerInner() {
-  const router = useRouter()
+export default function BarcodeScannerInner({ onScanResult, onStatusChange }: ScannerCameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [scanState, setScanState] = useState<ScanState>('idle')
+  const manualInputRef = useRef<HTMLInputElement>(null)
+  const lastResultRef = useRef<string>('')
+
+  const [scanState, setScanState] = useState<ScanStatus>('idle')
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
   const [selectedDevice, setSelectedDevice] = useState<string>('')
   const [scannedCode, setScannedCode] = useState<string>('')
   const [isActive, setIsActive] = useState(false)
-  const lastResultRef = useRef<string>('')
+  const [manualCode, setManualCode] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
     async function loadDevices() {
       try {
         const allDevices = await BrowserMultiFormatReader.listVideoInputDevices()
         setDevices(allDevices)
-        const backCamera = allDevices.find(d =>
+        const backCamera = allDevices.find((d) =>
           d.label.toLowerCase().includes('back') ||
           d.label.toLowerCase().includes('environment') ||
           d.label.toLowerCase().includes('rear')
@@ -34,11 +44,16 @@ export default function BarcodeScannerInner() {
         const defaultDevice = backCamera || allDevices[0]
         if (defaultDevice) setSelectedDevice(defaultDevice.deviceId)
       } catch {
-        setScanState('error')
+        updateState('error')
       }
     }
     loadDevices()
   }, [])
+
+  function updateState(state: ScanStatus) {
+    setScanState(state)
+    onStatusChange?.(state)
+  }
 
   const stopScanning = useCallback(() => {
     try { BrowserMultiFormatReader.releaseAllStreams() } catch {}
@@ -47,14 +62,42 @@ export default function BarcodeScannerInner() {
 
   useEffect(() => () => { stopScanning() }, [stopScanning])
 
+  async function processCode(code: string) {
+    if (isProcessing) return
+    setIsProcessing(true)
+    setScannedCode(code)
+    setManualCode('')
+    stopScanning()
+    updateState('processing')
+
+    try {
+      const product = await getProductByBarcode(code)
+      if (product) {
+        updateState('found')
+        toast.success(`Producto encontrado: ${product.name}`)
+        onScanResult(code, product)
+      } else {
+        updateState('not-found')
+        toast.info('Producto no encontrado. Abriendo formulario de creación...')
+        onScanResult(code, null)
+      }
+    } catch {
+      updateState('error')
+      toast.error('Error al buscar el producto en el sistema')
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
   async function startScanning() {
     if (!videoRef.current || !selectedDevice) {
       toast.error('No se detectó cámara disponible')
       return
     }
-    setScanState('scanning')
+    updateState('scanning')
     setIsActive(true)
     lastResultRef.current = ''
+    setScannedCode('')
 
     try {
       const reader = new BrowserMultiFormatReader()
@@ -66,32 +109,15 @@ export default function BarcodeScannerInner() {
             const code = result.getText()
             if (code === lastResultRef.current) return
             lastResultRef.current = code
-            setScannedCode(code)
-            stopScanning()
-
-            try {
-              const product = await getProductByBarcode(code)
-              if (product) {
-                setScanState('found')
-                toast.success(`Producto encontrado: ${product.name}`)
-                setTimeout(() => router.push(`/inventory/${product.id}`), 1500)
-              } else {
-                setScanState('not-found')
-                toast.info('Producto no encontrado. Abriendo formulario de creación...')
-                setTimeout(() => router.push(`/inventory/new?barcode=${encodeURIComponent(code)}`), 1500)
-              }
-            } catch {
-              setScanState('error')
-              toast.error('Error al buscar el producto en el sistema')
-            }
+            await processCode(code)
           }
           if (err && !(err instanceof NotFoundException)) {
-            // NotFoundException is normal (no barcode in frame), ignore
+            // NotFoundException is expected — no barcode in current frame
           }
         }
       )
     } catch (err: unknown) {
-      setScanState('error')
+      updateState('error')
       setIsActive(false)
       const msg = err instanceof Error ? err.message : ''
       if (msg.includes('Permission') || msg.includes('NotAllowed')) {
@@ -104,13 +130,15 @@ export default function BarcodeScannerInner() {
 
   function reset() {
     stopScanning()
-    setScanState('idle')
+    updateState('idle')
     setScannedCode('')
+    setManualCode('')
     lastResultRef.current = ''
+    setTimeout(() => manualInputRef.current?.focus(), 100)
   }
 
   function switchCamera() {
-    const currentIdx = devices.findIndex(d => d.deviceId === selectedDevice)
+    const currentIdx = devices.findIndex((d) => d.deviceId === selectedDevice)
     const nextIdx = (currentIdx + 1) % devices.length
     setSelectedDevice(devices[nextIdx].deviceId)
     if (isActive) {
@@ -119,10 +147,57 @@ export default function BarcodeScannerInner() {
     }
   }
 
+  async function handleManualSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const code = manualCode.trim()
+    if (!code) return
+    await processCode(code)
+  }
+
+  const isResult = scanState === 'found' || scanState === 'not-found'
+  const showReset = scannedCode || scanState === 'error'
+
   return (
-    <div className="max-w-lg mx-auto space-y-4">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      {/* Card header */}
+      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
+            <ScanBarcode className="w-5 h-5 text-indigo-600" />
+          </div>
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900">Escáner de cámara</h2>
+            <p className="text-xs text-slate-400">
+              {devices.length === 0
+                ? 'Sin cámara detectada'
+                : `${devices.length} cámara${devices.length > 1 ? 's' : ''} disponible${devices.length > 1 ? 's' : ''}`}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {devices.length > 1 && (
+            <button
+              onClick={switchCamera}
+              title="Cambiar cámara"
+              className="p-2 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            >
+              <FlipHorizontal className="w-4 h-4" />
+            </button>
+          )}
+          {showReset && (
+            <button
+              onClick={reset}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+            >
+              <RefreshCw className="w-3 h-3" />
+              Reiniciar
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Camera viewfinder */}
-      <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 aspect-[4/3]">
+      <div className="relative bg-slate-950 aspect-[4/3] w-full">
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
@@ -131,99 +206,170 @@ export default function BarcodeScannerInner() {
           style={{ display: isActive ? 'block' : 'none' }}
         />
 
-        {/* Scanning overlay */}
+        {/* Scanning overlay — corner brackets + laser line */}
         {isActive && scanState === 'scanning' && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="relative w-56 h-36">
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-indigo-400 rounded-tl" />
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-indigo-400 rounded-tr" />
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-indigo-400 rounded-bl" />
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-indigo-400 rounded-br" />
-              <div className="absolute inset-x-2 h-0.5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent shadow-[0_0_8px_rgba(99,102,241,0.8)] animate-bounce" style={{ top: '50%' }} />
+            <div className="relative w-64 h-40">
+              <div className="absolute top-0 left-0 w-10 h-10 border-t-[3px] border-l-[3px] border-indigo-400 rounded-tl-lg" />
+              <div className="absolute top-0 right-0 w-10 h-10 border-t-[3px] border-r-[3px] border-indigo-400 rounded-tr-lg" />
+              <div className="absolute bottom-0 left-0 w-10 h-10 border-b-[3px] border-l-[3px] border-indigo-400 rounded-bl-lg" />
+              <div className="absolute bottom-0 right-0 w-10 h-10 border-b-[3px] border-r-[3px] border-indigo-400 rounded-br-lg" />
+              <div
+                className="absolute inset-x-3 h-0.5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent animate-bounce"
+                style={{ top: '50%', boxShadow: '0 0 8px 2px rgba(99,102,241,0.6)' }}
+              />
             </div>
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-              <span className="text-xs text-indigo-200 bg-black/60 px-3 py-1 rounded-full">Apunta al código de barras</span>
+            <div className="absolute bottom-5 inset-x-0 flex justify-center">
+              <span className="text-[11px] text-white/80 bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">
+                Apunta al código de barras
+              </span>
             </div>
+          </div>
+        )}
+
+        {/* Processing overlay */}
+        {scanState === 'processing' && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-slate-950/80 backdrop-blur-sm">
+            <Loader2 className="w-10 h-10 text-indigo-400 animate-spin" />
+            <p className="text-white/70 text-sm">Buscando en inventario...</p>
+            {scannedCode && (
+              <code className="text-xs text-white/50 bg-white/10 px-3 py-1 rounded-lg font-mono">
+                {scannedCode}
+              </code>
+            )}
           </div>
         )}
 
         {/* Idle state */}
         {!isActive && scanState === 'idle' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-            <div className="w-20 h-20 rounded-full bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center">
-              <ScanBarcode className="w-10 h-10 text-indigo-400" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+            <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+              <ScanBarcode className="w-10 h-10 text-white/20" />
             </div>
-            <p className="text-slate-400 text-sm">Cámara inactiva</p>
+            <div className="text-center">
+              <p className="text-white/50 text-sm font-medium">Cámara inactiva</p>
+              <p className="text-white/30 text-xs mt-1">Activa la cámara o usa el campo manual</p>
+            </div>
           </div>
         )}
 
         {/* Error state */}
-        {scanState === 'error' && !isActive && (
+        {scanState === 'error' && !isActive && !isResult && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-            <AlertCircle className="w-12 h-12 text-red-400" />
-            <p className="text-red-400 text-sm font-medium">Error de cámara</p>
+            <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+              <AlertCircle className="w-8 h-8 text-red-400" />
+            </div>
+            <div className="text-center">
+              <p className="text-red-400 text-sm font-medium">Error de cámara</p>
+              <p className="text-white/40 text-xs mt-1">Verifica permisos o usa la entrada manual</p>
+            </div>
           </div>
         )}
 
         {/* Result overlay */}
-        {(scanState === 'found' || scanState === 'not-found') && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70 backdrop-blur-sm">
+        {isResult && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-slate-950/80 backdrop-blur-sm">
             {scanState === 'found' ? (
               <>
-                <CheckCircle className="w-16 h-16 text-emerald-400" />
-                <p className="text-white font-semibold">¡Producto encontrado!</p>
+                <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                </div>
+                <p className="text-white font-semibold text-sm">¡Producto encontrado!</p>
               </>
             ) : (
               <>
-                <AlertCircle className="w-16 h-16 text-amber-400" />
-                <p className="text-white font-semibold">Producto no encontrado</p>
-                <p className="text-slate-300 text-xs">Abriendo formulario de creación...</p>
+                <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center">
+                  <AlertCircle className="w-8 h-8 text-amber-400" />
+                </div>
+                <p className="text-white font-semibold text-sm">Producto no encontrado</p>
+                <p className="text-white/50 text-xs">Abriendo formulario de creación...</p>
               </>
             )}
-            <code className="text-xs text-slate-200 bg-black/50 px-3 py-1 rounded-lg font-mono">{scannedCode}</code>
+            {scannedCode && (
+              <code className="text-xs text-white/60 bg-white/10 px-3 py-1 rounded-lg font-mono mt-1">
+                {scannedCode}
+              </code>
+            )}
           </div>
         )}
       </div>
 
       {/* Controls */}
-      <div className="flex gap-2">
-        {!isActive ? (
-          <Button onClick={startScanning} className="flex-1" size="lg" disabled={!selectedDevice}>
-            <Camera className="w-4 h-4" />
-            {devices.length === 0 ? 'Sin cámara disponible' : 'Iniciar escáner'}
-          </Button>
-        ) : (
-          <Button onClick={stopScanning} variant="outline" className="flex-1" size="lg">
-            <CameraOff className="w-4 h-4" />
-            Detener
-          </Button>
-        )}
-        {devices.length > 1 && (
-          <Button onClick={switchCamera} variant="outline" size="lg" title="Cambiar cámara">
-            <FlipHorizontal className="w-4 h-4" />
-          </Button>
-        )}
-        {(scannedCode || scanState === 'error') && (
-          <Button onClick={reset} variant="secondary" size="lg">
-            <RefreshCw className="w-4 h-4" />
-          </Button>
+      <div className="p-5 space-y-4">
+        {/* Camera button */}
+        <div className="flex gap-2">
+          {!isActive ? (
+            <button
+              onClick={startScanning}
+              disabled={devices.length === 0}
+              className="flex-1 h-11 flex items-center justify-center gap-2 text-sm font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+            >
+              <Camera className="w-4 h-4" />
+              {devices.length === 0 ? 'Sin cámara disponible' : 'Activar cámara'}
+            </button>
+          ) : (
+            <button
+              onClick={stopScanning}
+              className="flex-1 h-11 flex items-center justify-center gap-2 text-sm font-medium rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
+            >
+              <CameraOff className="w-4 h-4" />
+              Detener cámara
+            </button>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-px bg-slate-100" />
+          <span className="text-xs text-slate-400 font-medium">o ingresa manualmente</span>
+          <div className="flex-1 h-px bg-slate-100" />
+        </div>
+
+        {/* Manual input — auto-submits on Enter; supports USB barcode readers */}
+        <form onSubmit={handleManualSubmit} className="flex gap-2">
+          <input
+            ref={manualInputRef}
+            type="text"
+            value={manualCode}
+            onChange={(e) => setManualCode(e.target.value)}
+            placeholder="Código de barras o SKU..."
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            className="flex-1 h-12 px-4 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition-all font-mono"
+          />
+          <button
+            type="submit"
+            disabled={!manualCode.trim() || isProcessing}
+            className="h-12 w-12 flex items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
+          >
+            {isProcessing ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Search className="w-4 h-4" />
+            )}
+          </button>
+        </form>
+
+        {/* Instructions */}
+        {(scanState === 'idle' || scanState === 'error') && (
+          <div className="rounded-xl bg-slate-50 border border-slate-100 p-4 space-y-2.5">
+            <p className="text-xs font-semibold text-slate-600">Cómo usar el escáner</p>
+            <ol className="text-xs text-slate-500 space-y-1.5 list-decimal list-inside">
+              <li>Activa la cámara y apunta al código de barras</li>
+              <li>Si tienes un lector USB, úsalo directamente en el campo manual</li>
+              <li>Producto encontrado → serás redirigido al inventario</li>
+              <li>Producto nuevo → se abrirá el formulario con el código precargado</li>
+            </ol>
+            {scanState === 'error' && (
+              <div className="flex items-center gap-1.5 pt-1 text-xs text-amber-600 font-medium">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                Requiere HTTPS y permiso de cámara en el navegador
+              </div>
+            )}
+          </div>
         )}
       </div>
-
-      {/* Instructions */}
-      {(scanState === 'idle' || scanState === 'error') && (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-2 shadow-sm">
-          <h3 className="text-sm font-medium text-slate-900">Cómo usar el escáner</h3>
-          <ol className="text-xs text-slate-500 space-y-1.5 list-decimal list-inside">
-            <li>Haz clic en <strong className="text-slate-700">"Iniciar escáner"</strong></li>
-            <li>Permite el acceso a la cámara en el navegador</li>
-            <li>Apunta al código de barras del producto</li>
-            <li>Si el producto <strong className="text-emerald-600">existe</strong>: irás a editarlo</li>
-            <li>Si <strong className="text-amber-600">no existe</strong>: se crea con el código precargado</li>
-          </ol>
-          <p className="text-xs text-amber-600 mt-2">⚠ Requiere <strong>HTTPS</strong> y permiso de cámara</p>
-        </div>
-      )}
     </div>
   )
 }
