@@ -4,10 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, Lock, Mail, User, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -31,7 +27,7 @@ export default function RegisterPage() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: fullName } }
+        options: { data: { full_name: fullName } },
       })
       if (error) throw error
 
@@ -51,79 +47,100 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="shadow-sm">
-      <CardHeader>
-        <CardTitle className="text-xl">Crear cuenta</CardTitle>
-        <CardDescription>Registra tu cuenta para acceder al ERP</CardDescription>
-      </CardHeader>
-      <form onSubmit={handleRegister}>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="fullName">Nombre completo</Label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="Tu nombre"
-                value={fullName}
-                onChange={e => setFullName(e.target.value)}
-                className="pl-10"
-                required
-              />
-            </div>
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+      <div className="mb-7">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Crear cuenta</h1>
+        <p className="text-sm text-slate-500 mt-1">Regístrate para acceder al ERP</p>
+      </div>
+
+      <form onSubmit={handleRegister} className="space-y-4">
+        {/* Full name */}
+        <div className="space-y-1.5">
+          <label htmlFor="fullName" className="block text-sm font-medium text-slate-700">
+            Nombre completo
+          </label>
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <input
+              id="fullName"
+              type="text"
+              placeholder="Tu nombre"
+              value={fullName}
+              onChange={e => setFullName(e.target.value)}
+              className="w-full h-11 pl-10 pr-4 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white transition-all"
+              required
+            />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Correo electrónico</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="tu@email.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="pl-10"
-                required
-              />
-            </div>
+        </div>
+
+        {/* Email */}
+        <div className="space-y-1.5">
+          <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+            Correo electrónico
+          </label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <input
+              id="email"
+              type="email"
+              placeholder="tu@email.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              className="w-full h-11 pl-10 pr-4 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white transition-all"
+              required
+              autoComplete="email"
+            />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Contraseña</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-              <Input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Mínimo 6 caracteres"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="pl-10 pr-10"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                tabIndex={-1}
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
+        </div>
+
+        {/* Password */}
+        <div className="space-y-1.5">
+          <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+            Contraseña
+          </label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Mínimo 6 caracteres"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              className="w-full h-11 pl-10 pr-11 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white transition-all"
+              required
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(v => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
           </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-3">
-          <Button type="submit" className="w-full" disabled={loading} size="lg">
-            {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Registrando...</> : 'Crear cuenta'}
-          </Button>
-          <p className="text-sm text-slate-500 text-center">
-            ¿Ya tienes cuenta?{' '}
-            <Link href="/login" className="text-indigo-600 hover:text-indigo-700 font-medium">
-              Inicia sesión
-            </Link>
-          </p>
-        </CardFooter>
+        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-colors mt-2"
+        >
+          {loading ? (
+            <><Loader2 className="w-4 h-4 animate-spin" /> Registrando...</>
+          ) : (
+            'Crear cuenta'
+          )}
+        </button>
+
+        <p className="text-sm text-slate-500 text-center pt-1">
+          ¿Ya tienes cuenta?{' '}
+          <Link href="/login" className="text-indigo-600 hover:text-indigo-700 font-semibold transition-colors">
+            Inicia sesión
+          </Link>
+        </p>
       </form>
-    </Card>
+    </div>
   )
 }

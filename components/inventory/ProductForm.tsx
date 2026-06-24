@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Loader2, Save, ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { ImageUpload } from './ImageUpload'
 
 const CATEGORIES = [
   'Empaques', 'Cajas', 'Bolsas', 'Cintas', 'Papel', 'Espuma',
@@ -157,12 +158,10 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
                 />
               </div>
               <div className="sm:col-span-2 space-y-2">
-                <Label htmlFor="image_url">URL de imagen</Label>
-                <Input
-                  id="image_url"
+                <Label>Imagen del producto</Label>
+                <ImageUpload
                   value={form.image_url ?? ''}
-                  onChange={e => handleChange('image_url', e.target.value)}
-                  placeholder="https://..."
+                  onChange={v => handleChange('image_url', v)}
                 />
               </div>
             </div>
@@ -180,6 +179,7 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
                   step="1"
                   value={form.cost_price}
                   onChange={e => handleChange('cost_price', parseFloat(e.target.value) || 0)}
+                  onFocus={e => e.target.select()}
                 />
               </div>
               <div className="space-y-2">
@@ -191,6 +191,7 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
                   step="1"
                   value={form.sale_price}
                   onChange={e => handleChange('sale_price', parseFloat(e.target.value) || 0)}
+                  onFocus={e => e.target.select()}
                 />
               </div>
               <div className="space-y-2">
@@ -221,6 +222,7 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
                   step="1"
                   value={form.stock}
                   onChange={e => handleChange('stock', parseInt(e.target.value) || 0)}
+                  onFocus={e => e.target.select()}
                 />
               </div>
               <div className="space-y-2">
@@ -232,6 +234,7 @@ export function ProductForm({ product, defaultBarcode }: ProductFormProps) {
                   step="1"
                   value={form.minimum_stock}
                   onChange={e => handleChange('minimum_stock', parseInt(e.target.value) || 0)}
+                  onFocus={e => e.target.select()}
                 />
                 <p className="text-xs text-slate-400">Recibirás alertas cuando el stock baje de este nivel</p>
               </div>
