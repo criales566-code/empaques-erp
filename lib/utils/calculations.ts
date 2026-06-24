@@ -9,16 +9,23 @@ export function calculateInventoryValue(products: Product[]): number {
   return products.reduce((acc, p) => acc + p.stock * p.cost_price, 0)
 }
 
-/** Utilidad de una venta */
-export function calculateSaleProfit(items: CartItem[]): number {
-  return items.reduce((acc, item) => {
-    return acc + (item.unit_price - item.unit_cost) * item.quantity
-  }, 0)
+/** Precio efectivo de un ítem después del descuento */
+export function effectivePrice(item: CartItem): number {
+  return item.unit_price * (1 - (item.discount_pct ?? 0) / 100)
 }
 
-/** Total de una venta */
-export function calculateSaleTotal(items: CartItem[]): number {
-  return items.reduce((acc, item) => acc + item.unit_price * item.quantity, 0)
+/** Utilidad de una venta (considera descuentos por ítem) */
+export function calculateSaleProfit(items: CartItem[], saleDiscountAmt = 0): number {
+  const itemsProfit = items.reduce((acc, item) => {
+    return acc + (effectivePrice(item) - item.unit_cost) * item.quantity
+  }, 0)
+  return itemsProfit - saleDiscountAmt
+}
+
+/** Total de una venta (considera descuentos por ítem) */
+export function calculateSaleTotal(items: CartItem[], saleDiscountAmt = 0): number {
+  const itemsTotal = items.reduce((acc, item) => acc + effectivePrice(item) * item.quantity, 0)
+  return Math.max(0, itemsTotal - saleDiscountAmt)
 }
 
 /** Total gastos */

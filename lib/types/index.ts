@@ -77,6 +77,7 @@ export interface CartItem {
   quantity: number
   unit_price: number
   unit_cost: number
+  discount_pct: number
 }
 
 export interface Expense {

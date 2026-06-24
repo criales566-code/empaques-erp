@@ -22,29 +22,36 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
   const videoRef = useRef<HTMLVideoElement>(null)
   const manualInputRef = useRef<HTMLInputElement>(null)
   const lastResultRef = useRef<string>('')
+  const readerRef = useRef<BrowserMultiFormatReader | null>(null)
 
   const [scanState, setScanState] = useState<ScanStatus>('idle')
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
-  const [selectedDevice, setSelectedDevice] = useState<string>('')
+  const [selectedDevice, setSelectedDevice] = useState<string | null>(null)
   const [scannedCode, setScannedCode] = useState<string>('')
   const [isActive, setIsActive] = useState(false)
   const [manualCode, setManualCode] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  // true when we can't enumerate devices (mobile before permission / iOS)
+  const [constraintsMode, setConstraintsMode] = useState(false)
 
   useEffect(() => {
     async function loadDevices() {
       try {
         const allDevices = await BrowserMultiFormatReader.listVideoInputDevices()
-        setDevices(allDevices)
-        const backCamera = allDevices.find((d) =>
-          d.label.toLowerCase().includes('back') ||
-          d.label.toLowerCase().includes('environment') ||
-          d.label.toLowerCase().includes('rear')
-        )
-        const defaultDevice = backCamera || allDevices[0]
-        if (defaultDevice) setSelectedDevice(defaultDevice.deviceId)
+        if (allDevices.length > 0) {
+          setDevices(allDevices)
+          const backCamera = allDevices.find(d =>
+            /back|environment|rear|trasera/i.test(d.label)
+          )
+          // On mobile, labels may be empty — prefer last device (usually back)
+          const def = backCamera || allDevices[allDevices.length - 1]
+          setSelectedDevice(def.deviceId)
+        } else {
+          // Mobile: no devices listed before permission — use constraints mode
+          setConstraintsMode(true)
+        }
       } catch {
-        updateState('error')
+        setConstraintsMode(true)
       }
     }
     loadDevices()
@@ -56,7 +63,10 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
   }
 
   const stopScanning = useCallback(() => {
-    try { BrowserMultiFormatReader.releaseAllStreams() } catch {}
+    try {
+      BrowserMultiFormatReader.releaseAllStreams()
+      readerRef.current = null
+    } catch {}
     setIsActive(false)
   }, [])
 
@@ -90,38 +100,60 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
   }
 
   async function startScanning() {
-    if (!videoRef.current || !selectedDevice) {
-      toast.error('No se detectó cámara disponible')
-      return
-    }
+    if (!videoRef.current) return
     updateState('scanning')
     setIsActive(true)
     lastResultRef.current = ''
     setScannedCode('')
 
+    const callback = async (result: { getText(): string } | null, err: Error | undefined) => {
+      if (result) {
+        const code = result.getText()
+        if (code === lastResultRef.current) return
+        lastResultRef.current = code
+        await processCode(code)
+      }
+      if (err && !(err instanceof NotFoundException)) {
+        // NotFoundException = no barcode in current frame — expected
+      }
+    }
+
     try {
       const reader = new BrowserMultiFormatReader()
-      await reader.decodeFromVideoDevice(
-        selectedDevice,
-        videoRef.current,
-        async (result, err) => {
-          if (result) {
-            const code = result.getText()
-            if (code === lastResultRef.current) return
-            lastResultRef.current = code
-            await processCode(code)
-          }
-          if (err && !(err instanceof NotFoundException)) {
-            // NotFoundException is expected — no barcode in current frame
-          }
+      readerRef.current = reader
+
+      if (selectedDevice && !constraintsMode) {
+        await reader.decodeFromVideoDevice(selectedDevice, videoRef.current, callback)
+      } else {
+        // Mobile / iOS: use facingMode constraint, triggers permission prompt
+        await reader.decodeFromConstraints(
+          { video: { facingMode: { ideal: 'environment' } } },
+          videoRef.current,
+          callback
+        )
+        // After permission, try to enumerate devices for switching
+        if (constraintsMode) {
+          try {
+            const allDevices = await BrowserMultiFormatReader.listVideoInputDevices()
+            if (allDevices.length > 0) {
+              setDevices(allDevices)
+              setConstraintsMode(false)
+              const backCamera = allDevices.find(d => /back|environment|rear|trasera/i.test(d.label))
+              const def = backCamera || allDevices[allDevices.length - 1]
+              setSelectedDevice(def.deviceId)
+            }
+          } catch { /* ignore */ }
         }
-      )
+      }
     } catch (err: unknown) {
       updateState('error')
       setIsActive(false)
+      readerRef.current = null
       const msg = err instanceof Error ? err.message : ''
-      if (msg.includes('Permission') || msg.includes('NotAllowed')) {
+      if (/Permission|NotAllowed|denied/i.test(msg)) {
         toast.error('Permiso de cámara denegado. Habilítalo en la configuración del navegador.')
+      } else if (/NotFound|DevicesNotFound|Requested device not found/i.test(msg)) {
+        toast.error('No se encontró cámara en este dispositivo.')
       } else {
         toast.error('Error al iniciar la cámara. Verifica que uses HTTPS.')
       }
@@ -138,7 +170,8 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
   }
 
   function switchCamera() {
-    const currentIdx = devices.findIndex((d) => d.deviceId === selectedDevice)
+    if (devices.length < 2) return
+    const currentIdx = devices.findIndex(d => d.deviceId === selectedDevice)
     const nextIdx = (currentIdx + 1) % devices.length
     setSelectedDevice(devices[nextIdx].deviceId)
     if (isActive) {
@@ -154,6 +187,7 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
     await processCode(code)
   }
 
+  const cameraCount = constraintsMode ? 1 : devices.length
   const isResult = scanState === 'found' || scanState === 'not-found'
   const showReset = scannedCode || scanState === 'error'
 
@@ -168,9 +202,9 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
           <div>
             <h2 className="text-sm font-semibold text-slate-900">Escáner de cámara</h2>
             <p className="text-xs text-slate-400">
-              {devices.length === 0
+              {cameraCount === 0
                 ? 'Sin cámara detectada'
-                : `${devices.length} cámara${devices.length > 1 ? 's' : ''} disponible${devices.length > 1 ? 's' : ''}`}
+                : `${cameraCount} cámara${cameraCount > 1 ? 's' : ''} disponible${cameraCount > 1 ? 's' : ''}`}
             </p>
           </div>
         </div>
@@ -206,7 +240,7 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
           style={{ display: isActive ? 'block' : 'none' }}
         />
 
-        {/* Scanning overlay — corner brackets + laser line */}
+        {/* Scanning overlay */}
         {isActive && scanState === 'scanning' && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="relative w-64 h-40">
@@ -296,16 +330,14 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
 
       {/* Controls */}
       <div className="p-5 space-y-4">
-        {/* Camera button */}
         <div className="flex gap-2">
           {!isActive ? (
             <button
               onClick={startScanning}
-              disabled={devices.length === 0}
               className="flex-1 h-11 flex items-center justify-center gap-2 text-sm font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
             >
               <Camera className="w-4 h-4" />
-              {devices.length === 0 ? 'Sin cámara disponible' : 'Activar cámara'}
+              Activar cámara
             </button>
           ) : (
             <button
@@ -318,20 +350,18 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
           )}
         </div>
 
-        {/* Divider */}
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-slate-100" />
           <span className="text-xs text-slate-400 font-medium">o ingresa manualmente</span>
           <div className="flex-1 h-px bg-slate-100" />
         </div>
 
-        {/* Manual input — auto-submits on Enter; supports USB barcode readers */}
         <form onSubmit={handleManualSubmit} className="flex gap-2">
           <input
             ref={manualInputRef}
             type="text"
             value={manualCode}
-            onChange={(e) => setManualCode(e.target.value)}
+            onChange={e => setManualCode(e.target.value)}
             placeholder="Código de barras o SKU..."
             autoComplete="off"
             autoCorrect="off"
@@ -351,7 +381,6 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
           </button>
         </form>
 
-        {/* Instructions */}
         {(scanState === 'idle' || scanState === 'error') && (
           <div className="rounded-xl bg-slate-50 border border-slate-100 p-4 space-y-2.5">
             <p className="text-xs font-semibold text-slate-600">Cómo usar el escáner</p>

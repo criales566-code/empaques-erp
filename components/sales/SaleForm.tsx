@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { formatCOP } from '@/lib/utils/currency'
-import { calculateSaleTotal, calculateSaleProfit } from '@/lib/utils/calculations'
-import { Search, Plus, Minus, Trash2, ShoppingCart, Package, Loader2, ArrowLeft } from 'lucide-react'
+import { calculateSaleTotal, calculateSaleProfit, effectivePrice } from '@/lib/utils/calculations'
+import { Search, Plus, Minus, Trash2, ShoppingCart, Package, Loader2, ArrowLeft, Percent, DollarSign } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 
@@ -28,6 +28,8 @@ export function SaleForm({ products }: { products: Product[] }) {
   const [paymentMethod, setPaymentMethod] = useState('efectivo')
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
+  const [saleDiscountType, setSaleDiscountType] = useState<'pct' | 'amt'>('pct')
+  const [saleDiscountValue, setSaleDiscountValue] = useState(0)
 
   const filtered = useMemo(() => {
     if (!search.trim()) return products.slice(0, 8)
@@ -57,6 +59,7 @@ export function SaleForm({ products }: { products: Product[] }) {
         quantity: 1,
         unit_price: product.sale_price,
         unit_cost: product.cost_price,
+        discount_pct: 0,
       }]
     })
     setSearch('')
@@ -81,12 +84,24 @@ export function SaleForm({ products }: { products: Product[] }) {
     ))
   }
 
+  function updateDiscount(productId: string, pct: number) {
+    setCart(prev => prev.map(item =>
+      item.product.id === productId
+        ? { ...item, discount_pct: Math.min(100, Math.max(0, pct)) }
+        : item
+    ))
+  }
+
   function removeFromCart(productId: string) {
     setCart(prev => prev.filter(item => item.product.id !== productId))
   }
 
-  const total = calculateSaleTotal(cart)
-  const profit = calculateSaleProfit(cart)
+  const itemsTotal = calculateSaleTotal(cart)
+  const saleDiscountAmt = saleDiscountType === 'pct'
+    ? itemsTotal * (saleDiscountValue / 100)
+    : saleDiscountValue
+  const finalTotal = calculateSaleTotal(cart, saleDiscountAmt)
+  const finalProfit = calculateSaleProfit(cart, saleDiscountAmt)
 
   async function handleSubmit() {
     if (cart.length === 0) {
@@ -95,7 +110,7 @@ export function SaleForm({ products }: { products: Product[] }) {
     }
     setLoading(true)
     try {
-      await createSale(customerName, paymentMethod, cart, notes)
+      await createSale(customerName, paymentMethod, cart, notes, saleDiscountAmt)
       toast.success('¡Venta registrada exitosamente!')
       router.push('/sales')
     } catch (err: unknown) {
@@ -157,58 +172,85 @@ export function SaleForm({ products }: { products: Product[] }) {
             </div>
           ) : (
             <div className="space-y-2">
-              {cart.map(item => (
-                <div key={item.product.id} className="rounded-lg bg-white border border-slate-200 overflow-hidden">
-                  <div className="flex items-center gap-3 px-3 pt-3 pb-2">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 truncate">{item.product.name}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">Costo: {formatCOP(item.unit_cost)}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => removeFromCart(item.product.id)}
-                      className="text-slate-300 hover:text-red-500 transition-colors p-1 rounded"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-3 px-3 pb-3">
-                    {/* Quantity controls */}
-                    <div className="flex items-center gap-1">
+              {cart.map(item => {
+                const discounted = item.discount_pct > 0
+                const effPrice = effectivePrice(item)
+                return (
+                  <div key={item.product.id} className="rounded-lg bg-white border border-slate-200 overflow-hidden">
+                    {/* Row 1: name + delete */}
+                    <div className="flex items-center gap-3 px-3 pt-3 pb-1">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-slate-900 truncate">{item.product.name}</p>
+                        <p className="text-xs text-slate-400 mt-0.5">Costo: {formatCOP(item.unit_cost)}</p>
+                      </div>
                       <button
                         type="button"
-                        onClick={() => updateQuantity(item.product.id, -1)}
-                        className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
+                        onClick={() => removeFromCart(item.product.id)}
+                        className="text-slate-300 hover:text-red-500 transition-colors p-1 rounded"
                       >
-                        <Minus className="w-3.5 h-3.5" />
-                      </button>
-                      <span className="w-8 text-center text-sm font-bold text-slate-900">{item.quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() => updateQuantity(item.product.id, 1)}
-                        className="w-9 h-9 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center text-indigo-600 transition-colors"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    {/* Price input */}
-                    <div className="flex-1 flex items-center gap-1.5">
-                      <span className="text-xs text-slate-400 whitespace-nowrap">$ unit.</span>
-                      <input
-                        type="number"
-                        value={item.unit_price}
-                        onChange={e => updatePrice(item.product.id, parseFloat(e.target.value) || 0)}
-                        className="w-full h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
-                        min="0"
-                      />
-                    </div>
-                    {/* Line total */}
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-slate-900">{formatCOP(item.unit_price * item.quantity)}</p>
+                    {/* Row 2: qty + price + discount + total */}
+                    <div className="flex items-center gap-2 px-3 pb-3 flex-wrap">
+                      {/* Quantity */}
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.product.id, -1)}
+                          className="w-8 h-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="w-7 text-center text-sm font-bold text-slate-900">{item.quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.product.id, 1)}
+                          className="w-8 h-8 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center text-indigo-600 transition-colors"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+                      {/* Price */}
+                      <div className="flex items-center gap-1 flex-1 min-w-0">
+                        <span className="text-xs text-slate-400 whitespace-nowrap shrink-0">$ unit.</span>
+                        <input
+                          type="number"
+                          value={item.unit_price}
+                          onChange={e => updatePrice(item.product.id, parseFloat(e.target.value) || 0)}
+                          onFocus={e => e.target.select()}
+                          className="w-full h-8 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
+                          min="0"
+                        />
+                      </div>
+                      {/* Discount */}
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs text-slate-400 shrink-0">% desc.</span>
+                        <input
+                          type="number"
+                          value={item.discount_pct}
+                          onChange={e => updateDiscount(item.product.id, parseFloat(e.target.value) || 0)}
+                          onFocus={e => e.target.select()}
+                          className="w-14 h-8 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400"
+                          min="0"
+                          max="100"
+                        />
+                      </div>
+                      {/* Line total */}
+                      <div className="text-right ml-auto">
+                        {discounted && (
+                          <p className="text-xs text-slate-400 line-through leading-none mb-0.5">
+                            {formatCOP(item.unit_price * item.quantity)}
+                          </p>
+                        )}
+                        <p className={`text-sm font-bold ${discounted ? 'text-amber-600' : 'text-slate-900'}`}>
+                          {formatCOP(effPrice * item.quantity)}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
@@ -256,15 +298,47 @@ export function SaleForm({ products }: { products: Product[] }) {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Subtotal</span>
-              <span className="text-slate-900">{formatCOP(total)}</span>
+              <span className="text-slate-900">{formatCOP(itemsTotal)}</span>
             </div>
+
+            {/* Sale-level discount */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-500 whitespace-nowrap">Descuento venta</span>
+              <div className="flex-1 flex items-center gap-1">
+                <input
+                  type="number"
+                  value={saleDiscountValue}
+                  onChange={e => setSaleDiscountValue(Math.max(0, parseFloat(e.target.value) || 0))}
+                  onFocus={e => e.target.select()}
+                  className="w-full h-8 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400"
+                  min="0"
+                />
+                <button
+                  type="button"
+                  onClick={() => setSaleDiscountType(t => t === 'pct' ? 'amt' : 'pct')}
+                  className="h-8 w-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors shrink-0"
+                  title="Cambiar tipo de descuento"
+                >
+                  {saleDiscountType === 'pct'
+                    ? <Percent className="w-3.5 h-3.5" />
+                    : <DollarSign className="w-3.5 h-3.5" />
+                  }
+                </button>
+              </div>
+              {saleDiscountAmt > 0 && (
+                <span className="text-sm font-medium text-amber-600 whitespace-nowrap">
+                  -{formatCOP(saleDiscountAmt)}
+                </span>
+              )}
+            </div>
+
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Utilidad estimada</span>
-              <span className="text-emerald-600">{formatCOP(profit)}</span>
+              <span className="text-emerald-600">{formatCOP(finalProfit)}</span>
             </div>
             <div className="border-t border-slate-100 pt-2 flex justify-between">
               <span className="font-semibold text-slate-900">Total</span>
-              <span className="font-bold text-xl text-slate-900">{formatCOP(total)}</span>
+              <span className="font-bold text-xl text-slate-900">{formatCOP(finalTotal)}</span>
             </div>
           </div>
           <Button

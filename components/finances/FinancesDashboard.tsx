@@ -9,7 +9,7 @@ import { deleteIncome } from '@/lib/actions/incomes'
 import { formatCOP } from '@/lib/utils/currency'
 import {
   totalExpenses, totalIncomes, totalSales,
-  totalProfit, calculateROI,
+  totalProfit,
 } from '@/lib/utils/calculations'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -52,10 +52,8 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
   const totalExp = totalExpenses(expenses)
   const totalInc = totalIncomes(incomes)
   const totalSal = totalSales(sales)
-  const profit = totalProfit(sales)
   const totalRevenue = totalSal + totalInc
   const netProfit = totalRevenue - totalExp
-  const roi = calculateROI(profit, totalExp || 1)
 
   async function handleDelete() {
     if (!deleteItem) return
@@ -73,18 +71,17 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
   }
 
   const kpis = [
-    { label: 'Ventas totales', value: totalSal, color: 'text-indigo-700', icon: TrendingUp, iconBg: 'bg-indigo-50', iconColor: 'text-indigo-600', accent: 'bg-indigo-500', isPercent: false },
-    { label: 'Gastos totales', value: totalExp, color: 'text-red-700', icon: TrendingDown, iconBg: 'bg-red-50', iconColor: 'text-red-600', accent: 'bg-red-500', isPercent: false },
-    { label: 'Ingresos extra', value: totalInc, color: 'text-blue-700', icon: ArrowUpRight, iconBg: 'bg-blue-50', iconColor: 'text-blue-600', accent: 'bg-blue-500', isPercent: false },
-    { label: 'Utilidad neta', value: netProfit, color: netProfit >= 0 ? 'text-emerald-700' : 'text-red-700', icon: DollarSign, iconBg: netProfit >= 0 ? 'bg-emerald-50' : 'bg-red-50', iconColor: netProfit >= 0 ? 'text-emerald-600' : 'text-red-600', accent: netProfit >= 0 ? 'bg-emerald-500' : 'bg-red-500', isPercent: false },
-    { label: 'Flujo de caja', value: netProfit, color: netProfit >= 0 ? 'text-emerald-700' : 'text-red-700', icon: ArrowUpRight, iconBg: 'bg-slate-100', iconColor: 'text-slate-500', accent: 'bg-slate-400', isPercent: false },
-    { label: 'ROI', value: roi, color: roi >= 0 ? 'text-amber-700' : 'text-red-700', icon: PiggyBank, iconBg: 'bg-amber-50', iconColor: 'text-amber-600', accent: 'bg-amber-500', isPercent: true },
+    { label: 'Ventas totales', value: totalSal, color: 'text-indigo-700', icon: TrendingUp, iconBg: 'bg-indigo-50', iconColor: 'text-indigo-600', accent: 'bg-indigo-500' },
+    { label: 'Gastos totales', value: totalExp, color: 'text-red-700', icon: TrendingDown, iconBg: 'bg-red-50', iconColor: 'text-red-600', accent: 'bg-red-500' },
+    { label: 'Ingresos extra', value: totalInc, color: 'text-blue-700', icon: ArrowUpRight, iconBg: 'bg-blue-50', iconColor: 'text-blue-600', accent: 'bg-blue-500' },
+    { label: 'Utilidad neta', value: netProfit, color: netProfit >= 0 ? 'text-emerald-700' : 'text-red-700', icon: DollarSign, iconBg: netProfit >= 0 ? 'bg-emerald-50' : 'bg-red-50', iconColor: netProfit >= 0 ? 'text-emerald-600' : 'text-red-600', accent: netProfit >= 0 ? 'bg-emerald-500' : 'bg-red-500' },
+    { label: 'Flujo de caja', value: netProfit, color: netProfit >= 0 ? 'text-emerald-700' : 'text-red-700', icon: ArrowUpRight, iconBg: 'bg-slate-100', iconColor: 'text-slate-500', accent: 'bg-slate-400' },
   ]
 
   return (
     <div className="space-y-6">
       {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
         {kpis.map(kpi => (
           <div key={kpi.label} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden flex">
             <div className={`w-1 flex-shrink-0 ${kpi.accent}`} />
@@ -92,9 +89,7 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
               <div className={`w-7 h-7 rounded-lg ${kpi.iconBg} flex items-center justify-center mb-2`}>
                 <kpi.icon className={`w-3.5 h-3.5 ${kpi.iconColor}`} />
               </div>
-              <p className={`text-sm font-bold ${kpi.color}`}>
-                {kpi.isPercent ? `${kpi.value.toFixed(1)}%` : formatCOP(kpi.value)}
-              </p>
+              <p className={`text-sm font-bold ${kpi.color}`}>{formatCOP(kpi.value)}</p>
               <p className="text-[10px] text-slate-400 mt-0.5 leading-tight">{kpi.label}</p>
             </div>
           </div>

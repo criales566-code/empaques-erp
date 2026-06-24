@@ -10,14 +10,15 @@ export async function createSale(
   customerName: string,
   paymentMethod: string,
   items: CartItem[],
-  notes?: string
+  notes?: string,
+  saleDiscountAmt = 0
 ) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('No autenticado')
 
-  const total = calculateSaleTotal(items)
-  const profit = calculateSaleProfit(items)
+  const total = calculateSaleTotal(items, saleDiscountAmt)
+  const profit = calculateSaleProfit(items, saleDiscountAmt)
 
   // 1. Crear la venta
   const { data: sale, error: saleError } = await supabase
