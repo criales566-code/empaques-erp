@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { BrowserMultiFormatReader } from '@zxing/browser'
-import { NotFoundException } from '@zxing/library'
+import { NotFoundException, type Result } from '@zxing/library'
 import { getProductByBarcode } from '@/lib/actions/products'
 import {
   Camera,
@@ -106,7 +106,7 @@ export default function BarcodeScannerInner({ onScanResult, onStatusChange }: Sc
     lastResultRef.current = ''
     setScannedCode('')
 
-    const callback = async (result: { getText(): string } | null, err: Error | undefined) => {
+    const callback = async (result: Result | undefined, err: Error | undefined) => {
       if (result) {
         const code = result.getText()
         if (code === lastResultRef.current) return
