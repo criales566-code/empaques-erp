@@ -3,6 +3,7 @@ import { getSales } from '@/lib/actions/sales'
 import { getExpenses } from '@/lib/actions/expenses'
 import { getIncomes } from '@/lib/actions/incomes'
 import { ReportsGenerator } from '@/components/reports/ReportsGenerator'
+import { PageHeader } from '@/components/ui/page-header'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,10 +17,10 @@ export default async function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Reportes</h1>
-        <p className="text-slate-500 text-sm mt-1">Genera reportes en PDF para imprimir o compartir</p>
-      </div>
+      <PageHeader
+        title="Reportes"
+        description="Genera reportes en PDF para imprimir o compartir"
+      />
       <ReportsGenerator
         products={products}
         sales={sales}

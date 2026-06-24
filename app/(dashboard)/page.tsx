@@ -15,6 +15,7 @@ import {
   totalExpenses,
 } from '@/lib/utils/calculations'
 import { formatCOP } from '@/lib/utils/currency'
+import { PageHeader } from '@/components/ui/page-header'
 import {
   ShoppingCart,
   TrendingUp,
@@ -81,11 +82,10 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-slate-500 text-sm mt-1">Resumen ejecutivo de tu negocio</p>
-      </div>
+      <PageHeader
+        title="Dashboard"
+        description="Resumen ejecutivo de tu negocio"
+      />
 
       {/* Alerts */}
       {(outOfStock.length > 0 || lowStock.length > 0) && (

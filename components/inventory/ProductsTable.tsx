@@ -13,7 +13,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
   DialogDescription, DialogFooter,
 } from '@/components/ui/dialog'
-import { Edit, Trash2, Search, Package, Filter } from 'lucide-react'
+import { Edit, Trash2, Search, Package, Filter, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 
 function getStockBadge(product: Product) {
@@ -90,10 +90,26 @@ export function ProductsTable({ products }: { products: Product[] }) {
 
       {/* Table */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-          <Package className="w-12 h-12 mb-3 opacity-40" />
-          <p className="text-sm font-medium">No hay productos</p>
-          <p className="text-xs mt-1">Agrega tu primer producto para comenzar</p>
+        <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 rounded-xl">
+          <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+            <Package className="w-8 h-8 text-slate-300" />
+          </div>
+          <p className="text-sm font-semibold text-slate-600">
+            {search || categoryFilter ? 'No se encontraron productos' : 'Sin productos aún'}
+          </p>
+          <p className="text-xs text-slate-400 mt-1 mb-4">
+            {search || categoryFilter
+              ? 'Intenta con otros términos de búsqueda'
+              : 'Comienza agregando tu primer producto al inventario'}
+          </p>
+          {!search && !categoryFilter && (
+            <Link href="/inventory/new">
+              <Button size="sm">
+                <Plus className="w-3.5 h-3.5" />
+                Agregar producto
+              </Button>
+            </Link>
+          )}
         </div>
       ) : (
         <div className="rounded-xl border border-slate-200 overflow-hidden shadow-sm">

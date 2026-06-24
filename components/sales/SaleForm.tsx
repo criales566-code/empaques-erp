@@ -150,54 +150,63 @@ export function SaleForm({ products }: { products: Product[] }) {
             Carrito ({cart.length} productos)
           </h2>
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-slate-400">
-              <ShoppingCart className="w-8 h-8 mb-2 opacity-40" />
-              <p className="text-sm">El carrito está vacío</p>
+            <div className="flex flex-col items-center justify-center py-10 text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
+              <ShoppingCart className="w-10 h-10 mb-3 opacity-30" />
+              <p className="text-sm font-medium text-slate-500">El carrito está vacío</p>
+              <p className="text-xs text-slate-400 mt-1">Busca y agrega productos arriba</p>
             </div>
           ) : (
             <div className="space-y-2">
               {cart.map(item => (
-                <div key={item.product.id} className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-900 truncate">{item.product.name}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-slate-500">Precio:</span>
+                <div key={item.product.id} className="rounded-lg bg-white border border-slate-200 overflow-hidden">
+                  <div className="flex items-center gap-3 px-3 pt-3 pb-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-slate-900 truncate">{item.product.name}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">Costo: {formatCOP(item.unit_cost)}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeFromCart(item.product.id)}
+                      className="text-slate-300 hover:text-red-500 transition-colors p-1 rounded"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-3 px-3 pb-3">
+                    {/* Quantity controls */}
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.product.id, -1)}
+                        className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
+                      >
+                        <Minus className="w-3.5 h-3.5" />
+                      </button>
+                      <span className="w-8 text-center text-sm font-bold text-slate-900">{item.quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.product.id, 1)}
+                        className="w-9 h-9 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center text-indigo-600 transition-colors"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    {/* Price input */}
+                    <div className="flex-1 flex items-center gap-1.5">
+                      <span className="text-xs text-slate-400 whitespace-nowrap">$ unit.</span>
                       <input
                         type="number"
                         value={item.unit_price}
                         onChange={e => updatePrice(item.product.id, parseFloat(e.target.value) || 0)}
-                        className="w-28 h-6 rounded border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                        className="w-full h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
                         min="0"
                       />
                     </div>
+                    {/* Line total */}
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-slate-900">{formatCOP(item.unit_price * item.quantity)}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => updateQuantity(item.product.id, -1)}
-                      className="w-7 h-7 rounded-md bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600 transition-colors"
-                    >
-                      <Minus className="w-3 h-3" />
-                    </button>
-                    <span className="w-8 text-center text-sm font-medium text-slate-900">{item.quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateQuantity(item.product.id, 1)}
-                      className="w-7 h-7 rounded-md bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600 transition-colors"
-                    >
-                      <Plus className="w-3 h-3" />
-                    </button>
-                  </div>
-                  <div className="text-right min-w-[80px]">
-                    <p className="text-sm font-semibold text-slate-900">{formatCOP(item.unit_price * item.quantity)}</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeFromCart(item.product.id)}
-                    className="text-red-500 hover:text-red-600 p-1 transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
                 </div>
               ))}
             </div>

@@ -73,12 +73,12 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
   }
 
   const kpis = [
-    { label: 'Ventas totales', value: totalSal, color: 'text-indigo-600', icon: TrendingUp, bg: 'bg-indigo-50 border-indigo-100', isPercent: false },
-    { label: 'Gastos totales', value: totalExp, color: 'text-red-600', icon: TrendingDown, bg: 'bg-red-50 border-red-100', isPercent: false },
-    { label: 'Ingresos extra', value: totalInc, color: 'text-blue-600', icon: ArrowUpRight, bg: 'bg-blue-50 border-blue-100', isPercent: false },
-    { label: 'Utilidad neta', value: netProfit, color: netProfit >= 0 ? 'text-emerald-600' : 'text-red-600', icon: DollarSign, bg: netProfit >= 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100', isPercent: false },
-    { label: 'Flujo de caja', value: netProfit, color: netProfit >= 0 ? 'text-emerald-600' : 'text-red-600', icon: ArrowUpRight, bg: 'bg-slate-50 border-slate-200', isPercent: false },
-    { label: 'ROI', value: roi, color: roi >= 0 ? 'text-amber-600' : 'text-red-600', icon: PiggyBank, bg: 'bg-amber-50 border-amber-100', isPercent: true },
+    { label: 'Ventas totales', value: totalSal, color: 'text-indigo-700', icon: TrendingUp, iconBg: 'bg-indigo-50', iconColor: 'text-indigo-600', accent: 'bg-indigo-500', isPercent: false },
+    { label: 'Gastos totales', value: totalExp, color: 'text-red-700', icon: TrendingDown, iconBg: 'bg-red-50', iconColor: 'text-red-600', accent: 'bg-red-500', isPercent: false },
+    { label: 'Ingresos extra', value: totalInc, color: 'text-blue-700', icon: ArrowUpRight, iconBg: 'bg-blue-50', iconColor: 'text-blue-600', accent: 'bg-blue-500', isPercent: false },
+    { label: 'Utilidad neta', value: netProfit, color: netProfit >= 0 ? 'text-emerald-700' : 'text-red-700', icon: DollarSign, iconBg: netProfit >= 0 ? 'bg-emerald-50' : 'bg-red-50', iconColor: netProfit >= 0 ? 'text-emerald-600' : 'text-red-600', accent: netProfit >= 0 ? 'bg-emerald-500' : 'bg-red-500', isPercent: false },
+    { label: 'Flujo de caja', value: netProfit, color: netProfit >= 0 ? 'text-emerald-700' : 'text-red-700', icon: ArrowUpRight, iconBg: 'bg-slate-100', iconColor: 'text-slate-500', accent: 'bg-slate-400', isPercent: false },
+    { label: 'ROI', value: roi, color: roi >= 0 ? 'text-amber-700' : 'text-red-700', icon: PiggyBank, iconBg: 'bg-amber-50', iconColor: 'text-amber-600', accent: 'bg-amber-500', isPercent: true },
   ]
 
   return (
@@ -86,14 +86,17 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         {kpis.map(kpi => (
-          <div key={kpi.label} className={`rounded-xl border p-3 ${kpi.bg}`}>
-            <div className="flex items-center gap-1 mb-2">
-              <kpi.icon className={`w-3.5 h-3.5 ${kpi.color}`} />
-              <span className="text-xs text-slate-500 leading-tight">{kpi.label}</span>
+          <div key={kpi.label} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden flex">
+            <div className={`w-1 flex-shrink-0 ${kpi.accent}`} />
+            <div className="flex-1 p-3">
+              <div className={`w-7 h-7 rounded-lg ${kpi.iconBg} flex items-center justify-center mb-2`}>
+                <kpi.icon className={`w-3.5 h-3.5 ${kpi.iconColor}`} />
+              </div>
+              <p className={`text-sm font-bold ${kpi.color}`}>
+                {kpi.isPercent ? `${kpi.value.toFixed(1)}%` : formatCOP(kpi.value)}
+              </p>
+              <p className="text-[10px] text-slate-400 mt-0.5 leading-tight">{kpi.label}</p>
             </div>
-            <p className={`text-base font-bold ${kpi.color}`}>
-              {kpi.isPercent ? `${kpi.value.toFixed(1)}%` : formatCOP(kpi.value)}
-            </p>
           </div>
         ))}
       </div>
@@ -119,7 +122,11 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
           )}
           <div className="space-y-2 max-h-80 overflow-y-auto">
             {expenses.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-4">No hay gastos registrados</p>
+              <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
+                <Receipt className="w-8 h-8 mb-2 opacity-30" />
+                <p className="text-sm font-medium text-slate-500">Sin gastos registrados</p>
+                <p className="text-xs mt-0.5">Haz clic en &quot;Agregar&quot; para registrar uno</p>
+              </div>
             ) : (
               expenses.map(exp => (
                 <div key={exp.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100 group hover:bg-slate-100 transition-colors">
@@ -174,7 +181,11 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
           )}
           <div className="space-y-2 max-h-80 overflow-y-auto">
             {incomes.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-4">No hay ingresos adicionales</p>
+              <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
+                <PiggyBank className="w-8 h-8 mb-2 opacity-30" />
+                <p className="text-sm font-medium text-slate-500">Sin ingresos adicionales</p>
+                <p className="text-xs mt-0.5">Haz clic en &quot;Agregar&quot; para registrar uno</p>
+              </div>
             ) : (
               incomes.map(inc => (
                 <div key={inc.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100 group hover:bg-slate-100 transition-colors">

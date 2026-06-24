@@ -12,59 +12,54 @@ interface StatsCardProps {
 
 const colorMap = {
   indigo: {
-    border: 'border-indigo-100',
     icon: 'text-indigo-600',
     iconBg: 'bg-indigo-50',
-    glow: 'shadow-indigo-100',
+    accent: 'bg-indigo-500',
   },
   emerald: {
-    border: 'border-emerald-100',
     icon: 'text-emerald-600',
     iconBg: 'bg-emerald-50',
-    glow: 'shadow-emerald-100',
+    accent: 'bg-emerald-500',
   },
   amber: {
-    border: 'border-amber-100',
     icon: 'text-amber-600',
     iconBg: 'bg-amber-50',
-    glow: 'shadow-amber-100',
+    accent: 'bg-amber-500',
   },
   red: {
-    border: 'border-red-100',
     icon: 'text-red-600',
     iconBg: 'bg-red-50',
-    glow: 'shadow-red-100',
+    accent: 'bg-red-500',
   },
   blue: {
-    border: 'border-blue-100',
     icon: 'text-blue-600',
     iconBg: 'bg-blue-50',
-    glow: 'shadow-blue-100',
+    accent: 'bg-blue-500',
   },
 }
 
 export function StatsCard({ title, value, description, icon: Icon, color, trend }: StatsCardProps) {
   const colors = colorMap[color]
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus
-  const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-slate-400'
+  const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-slate-300'
 
   return (
-    <div className={cn(
-      'rounded-xl border p-5 bg-white transition-all duration-200 hover:scale-[1.02] hover:shadow-md cursor-default shadow-sm',
-      colors.border,
-      colors.glow
-    )}>
-      <div className="flex items-start justify-between mb-4">
-        <div className={cn('p-2.5 rounded-lg', colors.iconBg)}>
-          <Icon className={cn('w-5 h-5', colors.icon)} />
+    <div className="rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 cursor-default overflow-hidden flex">
+      {/* Colored left accent bar */}
+      <div className={cn('w-1 flex-shrink-0', colors.accent)} />
+
+      <div className="flex-1 p-5">
+        <div className="flex items-start justify-between mb-4">
+          <div className={cn('p-2 rounded-lg', colors.iconBg)}>
+            <Icon className={cn('w-4 h-4', colors.icon)} />
+          </div>
+          <TrendIcon className={cn('w-4 h-4 mt-0.5', trendColor)} />
         </div>
-        <TrendIcon className={cn('w-4 h-4', trendColor)} />
-      </div>
-      <div>
-        <p className="text-2xl font-bold text-slate-900 tracking-tight">{value}</p>
-        <p className="text-xs font-medium text-slate-500 mt-1">{title}</p>
+
+        <p className="text-[1.6rem] font-bold text-slate-900 tracking-tight leading-none">{value}</p>
+        <p className="text-xs font-semibold text-slate-500 mt-2 uppercase tracking-wide">{title}</p>
         {description && (
-          <p className="text-xs text-slate-400 mt-1">{description}</p>
+          <p className="text-xs text-slate-400 mt-0.5">{description}</p>
         )}
       </div>
     </div>

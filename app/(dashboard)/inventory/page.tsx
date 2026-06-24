@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getProducts } from '@/lib/actions/products'
 import { ProductsTable } from '@/components/inventory/ProductsTable'
 import { Button } from '@/components/ui/button'
+import { PageHeader } from '@/components/ui/page-header'
 import { calculateInventoryValue, getOutOfStock, getLowStock } from '@/lib/utils/calculations'
 import { formatCOP } from '@/lib/utils/currency'
 import { Plus, Package, PackageX, AlertTriangle, DollarSign } from 'lucide-react'
@@ -14,51 +15,77 @@ export default async function InventoryPage() {
   const outOfStock = getOutOfStock(products)
   const lowStock = getLowStock(products)
 
+  const summaryCards = [
+    {
+      label: 'Valor total',
+      value: formatCOP(inventoryValue),
+      icon: DollarSign,
+      accent: 'bg-amber-500',
+      iconBg: 'bg-amber-50',
+      iconColor: 'text-amber-600',
+      valueColor: 'text-amber-700',
+    },
+    {
+      label: 'Total productos',
+      value: products.length.toString(),
+      icon: Package,
+      accent: 'bg-indigo-500',
+      iconBg: 'bg-indigo-50',
+      iconColor: 'text-indigo-600',
+      valueColor: 'text-slate-900',
+    },
+    {
+      label: 'Stock bajo',
+      value: lowStock.length.toString(),
+      icon: AlertTriangle,
+      accent: 'bg-amber-400',
+      iconBg: 'bg-amber-50',
+      iconColor: 'text-amber-600',
+      valueColor: lowStock.length > 0 ? 'text-amber-700' : 'text-slate-900',
+    },
+    {
+      label: 'Agotados',
+      value: outOfStock.length.toString(),
+      icon: PackageX,
+      accent: 'bg-red-500',
+      iconBg: 'bg-red-50',
+      iconColor: 'text-red-600',
+      valueColor: outOfStock.length > 0 ? 'text-red-700' : 'text-slate-900',
+    },
+  ]
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Inventario</h1>
-          <p className="text-slate-500 text-sm mt-1">{products.length} productos registrados</p>
-        </div>
-        <Link href="/inventory/new">
-          <Button>
-            <Plus className="w-4 h-4" />
-            Nuevo producto
-          </Button>
-        </Link>
-      </div>
+      <PageHeader
+        title="Inventario"
+        description={`${products.length} productos registrados`}
+        actions={
+          <Link href="/inventory/new">
+            <Button>
+              <Plus className="w-4 h-4" />
+              Nuevo producto
+            </Button>
+          </Link>
+        }
+      />
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-4 h-4 text-amber-600" />
-            <span className="text-xs text-slate-500">Valor total</span>
-          </div>
-          <p className="text-lg font-bold text-amber-600">{formatCOP(inventoryValue)}</p>
-        </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2">
-            <Package className="w-4 h-4 text-indigo-600" />
-            <span className="text-xs text-slate-500">Total productos</span>
-          </div>
-          <p className="text-lg font-bold text-slate-900">{products.length}</p>
-        </div>
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="w-4 h-4 text-amber-600" />
-            <span className="text-xs text-amber-600">Stock bajo</span>
-          </div>
-          <p className="text-lg font-bold text-amber-700">{lowStock.length}</p>
-        </div>
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <PackageX className="w-4 h-4 text-red-600" />
-            <span className="text-xs text-red-600">Agotados</span>
-          </div>
-          <p className="text-lg font-bold text-red-700">{outOfStock.length}</p>
-        </div>
+        {summaryCards.map(card => {
+          const Icon = card.icon
+          return (
+            <div key={card.label} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden flex">
+              <div className={`w-1 flex-shrink-0 ${card.accent}`} />
+              <div className="flex-1 p-4">
+                <div className={`w-8 h-8 rounded-lg ${card.iconBg} flex items-center justify-center mb-3`}>
+                  <Icon className={`w-4 h-4 ${card.iconColor}`} />
+                </div>
+                <p className={`text-xl font-bold ${card.valueColor}`}>{card.value}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{card.label}</p>
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       <ProductsTable products={products} />

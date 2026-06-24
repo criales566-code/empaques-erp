@@ -10,7 +10,8 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
   DialogDescription, DialogFooter,
 } from '@/components/ui/dialog'
-import { Trash2, ShoppingCart } from 'lucide-react'
+import { Trash2, ShoppingCart, Plus } from 'lucide-react'
+import Link from 'next/link'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -49,10 +50,18 @@ export function SalesTable({ sales }: { sales: Sale[] }) {
 
   if (sales.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-        <ShoppingCart className="w-12 h-12 mb-3 opacity-40" />
-        <p className="text-sm font-medium">No hay ventas registradas</p>
-        <p className="text-xs mt-1">Crea tu primera venta para comenzar</p>
+      <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 rounded-xl">
+        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+          <ShoppingCart className="w-8 h-8 text-slate-300" />
+        </div>
+        <p className="text-sm font-semibold text-slate-600">Sin ventas registradas</p>
+        <p className="text-xs text-slate-400 mt-1 mb-4">Registra tu primera venta para comenzar</p>
+        <Link href="/sales/new">
+          <Button size="sm">
+            <Plus className="w-3.5 h-3.5" />
+            Nueva venta
+          </Button>
+        </Link>
       </div>
     )
   }

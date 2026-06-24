@@ -2,6 +2,7 @@ import { getExpenses } from '@/lib/actions/expenses'
 import { getIncomes } from '@/lib/actions/incomes'
 import { getSales } from '@/lib/actions/sales'
 import { FinancesDashboard } from '@/components/finances/FinancesDashboard'
+import { PageHeader } from '@/components/ui/page-header'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,10 +15,10 @@ export default async function FinancesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Finanzas</h1>
-        <p className="text-slate-500 text-sm mt-1">Resumen financiero y flujo de caja</p>
-      </div>
+      <PageHeader
+        title="Finanzas"
+        description="Resumen financiero y flujo de caja"
+      />
       <FinancesDashboard expenses={expenses} incomes={incomes} sales={sales} />
     </div>
   )
