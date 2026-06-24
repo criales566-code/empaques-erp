@@ -48,8 +48,12 @@ export function ProductsTable({ products }: { products: Product[] }) {
     if (!deleteId) return
     setDeleting(true)
     try {
-      await deleteProduct(deleteId)
-      toast.success('Producto eliminado')
+      const result = await deleteProduct(deleteId)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Producto eliminado')
+      }
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Error al eliminar')
     } finally {

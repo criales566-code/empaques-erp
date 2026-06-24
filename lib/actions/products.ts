@@ -84,8 +84,8 @@ export async function updateProduct(id: string, formData: Partial<ProductFormDat
   return data
 }
 
-/** Eliminar producto */
-export async function deleteProduct(id: string) {
+/** Eliminar producto — retorna { error } en vez de lanzar para evitar errores de página */
+export async function deleteProduct(id: string): Promise<{ error?: string }> {
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -93,9 +93,16 @@ export async function deleteProduct(id: string) {
     .delete()
     .eq('id', id)
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    if (error.message.includes('foreign key') || error.message.includes('sales_items')) {
+      return { error: 'Este producto tiene ventas registradas. Ejecuta la migración en Supabase para permitir eliminar productos con historial de ventas.' }
+    }
+    return { error: error.message }
+  }
+
   revalidatePath('/inventory')
   revalidatePath('/')
+  return {}
 }
 
 /** Actualizar stock directamente */
