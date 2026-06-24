@@ -15,53 +15,49 @@ export default async function InventoryPage() {
   const outOfStock = getOutOfStock(products)
   const lowStock = getLowStock(products)
 
-  const summaryCards = [
+  const kpis = [
     {
-      label: 'Valor total',
+      label: 'Valor del inventario',
       value: formatCOP(inventoryValue),
       icon: DollarSign,
-      accent: 'bg-amber-500',
       iconBg: 'bg-amber-50',
-      iconColor: 'text-amber-600',
-      valueColor: 'text-amber-700',
+      iconColor: 'text-amber-500',
+      valueColor: 'text-slate-900',
     },
     {
-      label: 'Total productos',
+      label: 'Total de productos',
       value: products.length.toString(),
       icon: Package,
-      accent: 'bg-indigo-500',
       iconBg: 'bg-indigo-50',
-      iconColor: 'text-indigo-600',
+      iconColor: 'text-indigo-500',
       valueColor: 'text-slate-900',
     },
     {
       label: 'Stock bajo',
       value: lowStock.length.toString(),
       icon: AlertTriangle,
-      accent: 'bg-amber-400',
       iconBg: 'bg-amber-50',
-      iconColor: 'text-amber-600',
+      iconColor: 'text-amber-500',
       valueColor: lowStock.length > 0 ? 'text-amber-700' : 'text-slate-900',
     },
     {
-      label: 'Agotados',
+      label: 'Sin stock',
       value: outOfStock.length.toString(),
       icon: PackageX,
-      accent: 'bg-red-500',
       iconBg: 'bg-red-50',
-      iconColor: 'text-red-600',
-      valueColor: outOfStock.length > 0 ? 'text-red-700' : 'text-slate-900',
+      iconColor: 'text-red-500',
+      valueColor: outOfStock.length > 0 ? 'text-red-600' : 'text-slate-900',
     },
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       <PageHeader
         title="Inventario"
-        description={`${products.length} productos registrados`}
+        description={`${products.length} producto${products.length !== 1 ? 's' : ''} registrado${products.length !== 1 ? 's' : ''}`}
         actions={
           <Link href="/inventory/new">
-            <Button>
+            <Button className="h-9 px-4 text-sm font-semibold rounded-xl bg-slate-900 text-white hover:bg-slate-800 border-0 shadow-none">
               <Plus className="w-4 h-4" />
               Nuevo producto
             </Button>
@@ -69,20 +65,26 @@ export default async function InventoryPage() {
         }
       />
 
-      {/* Summary cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {summaryCards.map(card => {
-          const Icon = card.icon
+      {/* KPI cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpis.map((kpi) => {
+          const Icon = kpi.icon
           return (
-            <div key={card.label} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden flex">
-              <div className={`w-1 flex-shrink-0 ${card.accent}`} />
-              <div className="flex-1 p-4">
-                <div className={`w-8 h-8 rounded-lg ${card.iconBg} flex items-center justify-center mb-3`}>
-                  <Icon className={`w-4 h-4 ${card.iconColor}`} />
+            <div
+              key={kpi.label}
+              className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-md hover:border-slate-300 transition-all duration-150"
+            >
+              <div className="flex items-start justify-between gap-4 mb-5">
+                <p className="text-sm font-medium text-slate-500 leading-snug">{kpi.label}</p>
+                <div
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${kpi.iconBg}`}
+                >
+                  <Icon className={`w-[18px] h-[18px] ${kpi.iconColor}`} />
                 </div>
-                <p className={`text-xl font-bold ${card.valueColor}`}>{card.value}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{card.label}</p>
               </div>
+              <p className={`text-[28px] font-bold tracking-tight leading-none ${kpi.valueColor}`}>
+                {kpi.value}
+              </p>
             </div>
           )
         })}
