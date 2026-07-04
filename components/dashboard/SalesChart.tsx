@@ -24,11 +24,12 @@ interface SalesChartProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white border border-slate-200 rounded-lg p-3 shadow-lg">
-        <p className="text-slate-900 font-medium text-sm mb-2">{label}</p>
+      <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xl">
+        <p className="text-slate-900 font-semibold text-[14px] mb-2">{label}</p>
         {payload.map((entry: any) => (
-          <p key={entry.name} className="text-xs" style={{ color: entry.color }}>
-            {entry.name}: {formatCOPCompact(entry.value)}
+          <p key={entry.name} className="text-[13px] font-medium flex items-center gap-2" style={{ color: entry.color }}>
+            <span className="w-2 h-2 rounded-full" style={{ background: entry.color }} />
+            {entry.name}: <span className="font-bold">{formatCOPCompact(entry.value)}</span>
           </p>
         ))}
       </div>
@@ -69,31 +70,33 @@ export function SalesChart({ sales, expenses }: SalesChartProps) {
   }, [sales, expenses])
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h3 className="text-sm font-semibold text-slate-900 mb-4">Ventas vs Gastos (6 meses)</h3>
-      <ResponsiveContainer width="100%" height={220}>
-        <BarChart data={data} barGap={4}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm h-full">
+      <h3 className="text-[15px] font-semibold text-slate-900 mb-5">Ventas vs Gastos (últimos 6 meses)</h3>
+      <ResponsiveContainer width="100%" height={260}>
+        <BarChart data={data} barGap={6} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
           <XAxis
             dataKey="mes"
-            tick={{ fill: '#94a3b8', fontSize: 11 }}
+            tick={{ fill: '#475569', fontSize: 12, fontWeight: 500 }}
             axisLine={false}
             tickLine={false}
+            dy={5}
           />
           <YAxis
             tickFormatter={v => formatCOPCompact(v)}
-            tick={{ fill: '#94a3b8', fontSize: 10 }}
+            tick={{ fill: '#64748b', fontSize: 11 }}
             axisLine={false}
             tickLine={false}
             width={70}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99,102,241,0.04)' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99,102,241,0.06)' }} />
           <Legend
-            wrapperStyle={{ fontSize: '11px', color: '#64748b', paddingTop: '12px' }}
+            wrapperStyle={{ fontSize: '13px', color: '#475569', paddingTop: '16px', fontWeight: 500 }}
+            iconType="circle"
           />
-          <Bar dataKey="Ventas" fill="#6366f1" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="Gastos" fill="#ef4444" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="Utilidad" fill="#10b981" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="Ventas" fill="#6366f1" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="Gastos" fill="#ef4444" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="Utilidad" fill="#10b981" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

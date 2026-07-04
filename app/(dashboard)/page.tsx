@@ -89,21 +89,21 @@ export default async function DashboardPage() {
       {/* Page heading */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1.5">
+          <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">
             Resumen general
           </p>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
         </div>
-        <p className="text-sm text-slate-400 mt-1 capitalize">{today}</p>
+        <p className="text-[14px] font-medium text-slate-500 mt-1 capitalize">{today}</p>
       </div>
 
       {/* Alert banners */}
       {(outOfStock.length > 0 || lowStock.length > 0) && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2.5">
           {outOfStock.length > 0 && (
             <Link
               href="/inventory"
-              className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-2.5 text-sm text-red-700 hover:bg-red-100 transition-colors font-medium"
+              className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-[14px] text-red-700 hover:bg-red-100 transition-colors font-semibold"
             >
               <PackageX className="w-4 h-4 shrink-0" />
               <strong>{outOfStock.length}</strong>&nbsp;producto{outOfStock.length > 1 ? 's' : ''} agotado{outOfStock.length > 1 ? 's' : ''}
@@ -112,7 +112,7 @@ export default async function DashboardPage() {
           {lowStock.length > 0 && (
             <Link
               href="/inventory"
-              className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 text-sm text-amber-700 hover:bg-amber-100 transition-colors font-medium"
+              className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-[14px] text-amber-800 hover:bg-amber-100 transition-colors font-semibold"
             >
               <AlertTriangle className="w-4 h-4 shrink-0" />
               <strong>{lowStock.length}</strong>&nbsp;con stock bajo
@@ -139,7 +139,7 @@ export default async function DashboardPage() {
         <div className="space-y-5">
           {/* Financial summary */}
           <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <h3 className="text-sm font-semibold text-slate-900 mb-5">Resumen financiero</h3>
+            <h3 className="text-[15px] font-semibold text-slate-900 mb-5">Resumen financiero</h3>
             <div className="space-y-4">
               {[
                 {
@@ -168,13 +168,13 @@ export default async function DashboardPage() {
                 },
               ].map((item) => (
                 <div key={item.label}>
-                  <div className="flex justify-between items-baseline mb-1.5">
-                    <span className="text-xs font-medium text-slate-500">{item.label}</span>
-                    <span className={`text-sm font-bold ${item.color}`}>
+                  <div className="flex justify-between items-baseline mb-2 gap-2">
+                    <span className="text-[13px] font-semibold text-slate-600">{item.label}</span>
+                    <span className={`text-[14px] font-bold ${item.color}`}>
                       {formatCOP(item.value)}
                     </span>
                   </div>
-                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${item.bar}`}
                       style={{ width: `${item.pct}%` }}
@@ -188,10 +188,10 @@ export default async function DashboardPage() {
           {/* Inventory status */}
           <div className="bg-white rounded-2xl border border-slate-200 p-6">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-sm font-semibold text-slate-900">Estado del inventario</h3>
+              <h3 className="text-[15px] font-semibold text-slate-900">Estado del inventario</h3>
               <Link
                 href="/inventory"
-                className="text-xs text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+                className="text-[13px] text-indigo-600 hover:text-indigo-700 font-semibold transition-colors"
               >
                 Ver todo
               </Link>
@@ -200,13 +200,13 @@ export default async function DashboardPage() {
             <div className="space-y-3 mb-4">
               {[
                 { label: 'En stock', count: inStock, dot: 'bg-emerald-500', text: 'text-emerald-700' },
-                { label: 'Stock bajo', count: lowStock.length, dot: 'bg-amber-400', text: 'text-amber-700' },
+                { label: 'Stock bajo', count: lowStock.length, dot: 'bg-amber-500', text: 'text-amber-700' },
                 { label: 'Agotados', count: outOfStock.length, dot: 'bg-red-500', text: 'text-red-700' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-3">
-                  <span className={`w-2 h-2 rounded-full shrink-0 ${item.dot}`} />
-                  <span className="text-sm text-slate-500 flex-1">{item.label}</span>
-                  <span className={`text-sm font-bold ${item.text}`}>{item.count}</span>
+                  <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${item.dot}`} />
+                  <span className="text-[14px] font-medium text-slate-700 flex-1">{item.label}</span>
+                  <span className={`text-[15px] font-bold ${item.text}`}>{item.count}</span>
                 </div>
               ))}
             </div>
@@ -230,11 +230,11 @@ export default async function DashboardPage() {
 
             {products.length === 0 && (
               <div className="flex flex-col items-center justify-center py-6 gap-2 text-center">
-                <Package className="w-8 h-8 text-slate-200" />
-                <p className="text-xs text-slate-400">Sin productos registrados</p>
+                <Package className="w-10 h-10 text-slate-300" />
+                <p className="text-[13px] text-slate-500">Sin productos registrados</p>
                 <Link
                   href="/inventory/new"
-                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
+                  className="text-[13px] font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
                 >
                   Agregar primer producto →
                 </Link>

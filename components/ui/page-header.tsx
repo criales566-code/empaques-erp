@@ -21,27 +21,27 @@ export function PageHeader({ title, description, breadcrumbs, actions, className
     <div className={cn('flex flex-col sm:flex-row sm:items-center justify-between gap-4', className)}>
       <div>
         {breadcrumbs && breadcrumbs.length > 0 && (
-          <nav className="flex items-center gap-1 mb-2">
+          <nav className="flex items-center gap-1 mb-2.5">
             {breadcrumbs.map((crumb, i) => (
               <span key={i} className="flex items-center gap-1">
-                {i > 0 && <ChevronRight className="w-3 h-3 text-slate-300" />}
+                {i > 0 && <ChevronRight className="w-3.5 h-3.5 text-slate-400" />}
                 {crumb.href ? (
                   <Link
                     href={crumb.href}
-                    className="text-xs text-slate-400 hover:text-slate-700 transition-colors"
+                    className="text-[13px] font-medium text-slate-500 hover:text-slate-900 transition-colors"
                   >
                     {crumb.label}
                   </Link>
                 ) : (
-                  <span className="text-xs text-slate-400">{crumb.label}</span>
+                  <span className="text-[13px] font-medium text-slate-500">{crumb.label}</span>
                 )}
               </span>
             ))}
           </nav>
         )}
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{title}</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
         {description && (
-          <p className="text-sm text-slate-500 mt-1">{description}</p>
+          <p className="text-[14px] text-slate-600 mt-1.5">{description}</p>
         )}
       </div>
       {actions && (

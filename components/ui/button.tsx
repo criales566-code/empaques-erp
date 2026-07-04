@@ -23,11 +23,11 @@ const buttonVariants = cva(
           "bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 active:scale-95",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-12 rounded-xl px-6 text-base",
+        default: "h-11 px-4 py-2 text-[14px]",
+        sm: "h-9 rounded-md px-3 text-[13px]",
+        lg: "h-12 rounded-xl px-6 text-[15px]",
         icon: "h-10 w-10",
-        "icon-sm": "h-8 w-8",
+        "icon-sm": "h-9 w-9",
       },
     },
     defaultVariants: {

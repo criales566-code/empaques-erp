@@ -67,21 +67,21 @@ export function ProductsTable({ products }: { products: Product[] }) {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
           <Input
             placeholder="Buscar por nombre, SKU o código de barras..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-11 text-[14px]"
           />
         </div>
         {categories.length > 0 && (
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-400" />
+            <Filter className="w-4 h-4 text-slate-500 shrink-0" />
             <select
               value={categoryFilter}
               onChange={e => setCategoryFilter(e.target.value)}
-              className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
+              className="h-11 min-w-0 flex-1 sm:flex-none rounded-lg border border-slate-200 bg-white px-3 text-[14px] text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
             >
               <option value="">Todas las categorías</option>
               {categories.map(cat => (
@@ -94,14 +94,14 @@ export function ProductsTable({ products }: { products: Product[] }) {
 
       {/* Table */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 rounded-xl">
+        <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-white">
           <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-            <Package className="w-8 h-8 text-slate-300" />
+            <Package className="w-8 h-8 text-slate-400" />
           </div>
-          <p className="text-sm font-semibold text-slate-600">
+          <p className="text-[15px] font-semibold text-slate-800">
             {search || categoryFilter ? 'No se encontraron productos' : 'Sin productos aún'}
           </p>
-          <p className="text-xs text-slate-400 mt-1 mb-4">
+          <p className="text-[13px] text-slate-500 mt-1 mb-4 text-center max-w-xs px-4">
             {search || categoryFilter
               ? 'Intenta con otros términos de búsqueda'
               : 'Comienza agregando tu primer producto al inventario'}
@@ -116,76 +116,76 @@ export function ProductsTable({ products }: { products: Product[] }) {
           )}
         </div>
       ) : (
-        <div className="rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-slate-200 overflow-hidden shadow-sm bg-white">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-[14px]">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50">
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Producto</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider hidden md:table-cell">SKU / Barcode</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider hidden lg:table-cell">Categoría</th>
-                  <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Precio</th>
-                  <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Acciones</th>
+                  <th className="text-left px-5 py-3.5 text-[12px] font-semibold text-slate-600 uppercase tracking-wider">Producto</th>
+                  <th className="text-left px-5 py-3.5 text-[12px] font-semibold text-slate-600 uppercase tracking-wider hidden md:table-cell">SKU / Barcode</th>
+                  <th className="text-left px-5 py-3.5 text-[12px] font-semibold text-slate-600 uppercase tracking-wider hidden lg:table-cell">Categoría</th>
+                  <th className="text-right px-5 py-3.5 text-[12px] font-semibold text-slate-600 uppercase tracking-wider">Precio</th>
+                  <th className="text-right px-5 py-3.5 text-[12px] font-semibold text-slate-600 uppercase tracking-wider">Stock</th>
+                  <th className="text-left px-5 py-3.5 text-[12px] font-semibold text-slate-600 uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-5 py-3.5 text-[12px] font-semibold text-slate-600 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filtered.map(product => (
                   <tr key={product.id} className="bg-white hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         {product.image_url ? (
-                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                          <div className="w-11 h-11 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                             <Image
                               src={product.image_url}
                               alt={product.name}
-                              width={40}
-                              height={40}
+                              width={44}
+                              height={44}
                               className="w-full h-full object-cover"
                             />
                           </div>
                         ) : (
-                          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
-                            <Package className="w-4 h-4 text-slate-400" />
+                          <div className="w-11 h-11 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                            <Package className="w-5 h-5 text-slate-500" />
                           </div>
                         )}
                         <div className="min-w-0">
-                          <p className="font-medium text-slate-900 truncate max-w-[150px]">{product.name}</p>
+                          <p className="font-semibold text-slate-900 truncate max-w-[180px]">{product.name}</p>
                           {product.supplier && (
-                            <p className="text-xs text-slate-400 truncate">{product.supplier}</p>
+                            <p className="text-[12px] text-slate-500 truncate mt-0.5">{product.supplier}</p>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 hidden md:table-cell">
-                      <div className="text-xs text-slate-500">
-                        {product.sku && <div>SKU: {product.sku}</div>}
-                        {product.barcode && <div>EAN: {product.barcode}</div>}
+                    <td className="px-5 py-4 hidden md:table-cell">
+                      <div className="text-[13px] text-slate-600 space-y-0.5">
+                        {product.sku && <div><span className="font-medium text-slate-500">SKU:</span> {product.sku}</div>}
+                        {product.barcode && <div><span className="font-medium text-slate-500">EAN:</span> {product.barcode}</div>}
                       </div>
                     </td>
-                    <td className="px-4 py-3 hidden lg:table-cell">
+                    <td className="px-5 py-4 hidden lg:table-cell">
                       {product.category && (
-                        <Badge variant="outline" className="text-xs">{product.category}</Badge>
+                        <Badge variant="outline" className="text-[12px]">{product.category}</Badge>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-4 text-right">
                       <div>
-                        <p className="font-medium text-slate-900">{formatCOP(product.sale_price)}</p>
-                        <p className="text-xs text-slate-400">Costo: {formatCOP(product.cost_price)}</p>
+                        <p className="font-semibold text-slate-900">{formatCOP(product.sale_price)}</p>
+                        <p className="text-[12px] text-slate-500 mt-0.5">Costo: {formatCOP(product.cost_price)}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-4 text-right">
                       <div>
-                        <p className="font-medium text-slate-900">{product.stock}</p>
-                        <p className="text-xs text-slate-400">Mín: {product.minimum_stock}</p>
+                        <p className="font-semibold text-slate-900">{product.stock}</p>
+                        <p className="text-[12px] text-slate-500 mt-0.5">Mín: {product.minimum_stock}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3">{getStockBadge(product)}</td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-4">{getStockBadge(product)}</td>
+                    <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/inventory/${product.id}`}>
-                          <Button variant="ghost" size="icon-sm" title="Editar">
+                          <Button variant="ghost" size="icon-sm" title="Editar" aria-label="Editar producto">
                             <Edit className="w-4 h-4" />
                           </Button>
                         </Link>
@@ -195,6 +195,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
                           className="text-red-500 hover:text-red-600 hover:bg-red-50"
                           onClick={() => setDeleteId(product.id)}
                           title="Eliminar"
+                          aria-label="Eliminar producto"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

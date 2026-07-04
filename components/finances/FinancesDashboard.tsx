@@ -81,16 +81,18 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
   return (
     <div className="space-y-6">
       {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
         {kpis.map(kpi => (
-          <div key={kpi.label} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden flex">
-            <div className={`w-1 flex-shrink-0 ${kpi.accent}`} />
-            <div className="flex-1 p-3">
-              <div className={`w-7 h-7 rounded-lg ${kpi.iconBg} flex items-center justify-center mb-2`}>
-                <kpi.icon className={`w-3.5 h-3.5 ${kpi.iconColor}`} />
+          <div key={kpi.label} className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden flex hover:shadow-md hover:border-slate-300 transition-all">
+            <div className={`w-1.5 flex-shrink-0 ${kpi.accent}`} />
+            <div className="flex-1 p-4 min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <p className="text-[12px] font-semibold text-slate-600 uppercase tracking-wide truncate">{kpi.label}</p>
+                <div className={`w-9 h-9 rounded-lg ${kpi.iconBg} flex items-center justify-center shrink-0`}>
+                  <kpi.icon className={`w-4 h-4 ${kpi.iconColor}`} />
+                </div>
               </div>
-              <p className={`text-sm font-bold ${kpi.color}`}>{formatCOP(kpi.value)}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5 leading-tight">{kpi.label}</p>
+              <p className={`text-[18px] font-bold tracking-tight break-words ${kpi.color}`}>{formatCOP(kpi.value)}</p>
             </div>
           </div>
         ))}
@@ -99,14 +101,14 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
       {/* Two columns */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Expenses */}
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-              <Receipt className="w-4 h-4 text-red-500" />
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
+              <Receipt className="w-[18px] h-[18px] text-red-500" />
               Gastos
             </h2>
             <Button size="sm" variant="outline" onClick={() => setShowExpenseForm(true)}>
-              <Plus className="w-3 h-3" />
+              <Plus className="w-3.5 h-3.5" />
               Agregar
             </Button>
           </div>
@@ -115,57 +117,58 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
               <ExpenseForm onClose={() => setShowExpenseForm(false)} />
             </div>
           )}
-          <div className="space-y-2 max-h-80 overflow-y-auto">
+          <div className="space-y-2 max-h-96 overflow-y-auto">
             {expenses.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
-                <Receipt className="w-8 h-8 mb-2 opacity-30" />
-                <p className="text-sm font-medium text-slate-500">Sin gastos registrados</p>
-                <p className="text-xs mt-0.5">Haz clic en &quot;Agregar&quot; para registrar uno</p>
+              <div className="flex flex-col items-center justify-center py-10 border-2 border-dashed border-slate-200 rounded-xl">
+                <Receipt className="w-10 h-10 mb-3 text-slate-300" />
+                <p className="text-[14px] font-semibold text-slate-700">Sin gastos registrados</p>
+                <p className="text-[13px] text-slate-500 mt-1">Haz clic en &quot;Agregar&quot; para registrar uno</p>
               </div>
             ) : (
               expenses.map(exp => (
-                <div key={exp.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100 group hover:bg-slate-100 transition-colors">
-                  <div className="min-w-0">
-                    <p className="text-sm text-slate-900 font-medium truncate">{exp.description}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <Badge variant="destructive" className="text-xs">
+                <div key={exp.id} className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-100 group hover:bg-slate-100 transition-colors">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[14px] text-slate-900 font-semibold truncate">{exp.description}</p>
+                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                      <Badge variant="destructive" className="text-[11px]">
                         {EXPENSE_CATEGORY_LABELS[exp.category] || exp.category}
                       </Badge>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-[12px] text-slate-500">
                         {format(new Date(exp.created_at), 'dd MMM', { locale: es })}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 ml-2 flex-shrink-0">
-                    <span className="text-sm font-semibold text-red-600">-{formatCOP(exp.amount)}</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="text-[14px] font-bold text-red-600 whitespace-nowrap">-{formatCOP(exp.amount)}</span>
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-600"
+                      className="text-slate-400 hover:text-red-600 hover:bg-red-50 sm:opacity-0 sm:group-hover:opacity-100"
                       onClick={() => setDeleteItem({ id: exp.id, type: 'expense' })}
+                      aria-label="Eliminar gasto"
                     >
-                      <Trash2 className="w-3 h-3" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                   </div>
                 </div>
               ))
             )}
           </div>
-          <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between">
-            <span className="text-sm text-slate-500">Total gastos</span>
-            <span className="text-sm font-bold text-red-600">{formatCOP(totalExp)}</span>
+          <div className="mt-4 pt-4 border-t border-slate-200 flex justify-between items-baseline">
+            <span className="text-[14px] font-medium text-slate-600">Total gastos</span>
+            <span className="text-[16px] font-bold text-red-600">{formatCOP(totalExp)}</span>
           </div>
         </div>
 
         {/* Incomes */}
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-              <PiggyBank className="w-4 h-4 text-emerald-500" />
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
+              <PiggyBank className="w-[18px] h-[18px] text-emerald-500" />
               Ingresos adicionales
             </h2>
             <Button size="sm" variant="outline" onClick={() => setShowIncomeForm(true)}>
-              <Plus className="w-3 h-3" />
+              <Plus className="w-3.5 h-3.5" />
               Agregar
             </Button>
           </div>
@@ -174,40 +177,41 @@ export function FinancesDashboard({ expenses, incomes, sales }: Props) {
               <IncomeForm onClose={() => setShowIncomeForm(false)} />
             </div>
           )}
-          <div className="space-y-2 max-h-80 overflow-y-auto">
+          <div className="space-y-2 max-h-96 overflow-y-auto">
             {incomes.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
-                <PiggyBank className="w-8 h-8 mb-2 opacity-30" />
-                <p className="text-sm font-medium text-slate-500">Sin ingresos adicionales</p>
-                <p className="text-xs mt-0.5">Haz clic en &quot;Agregar&quot; para registrar uno</p>
+              <div className="flex flex-col items-center justify-center py-10 border-2 border-dashed border-slate-200 rounded-xl">
+                <PiggyBank className="w-10 h-10 mb-3 text-slate-300" />
+                <p className="text-[14px] font-semibold text-slate-700">Sin ingresos adicionales</p>
+                <p className="text-[13px] text-slate-500 mt-1">Haz clic en &quot;Agregar&quot; para registrar uno</p>
               </div>
             ) : (
               incomes.map(inc => (
-                <div key={inc.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100 group hover:bg-slate-100 transition-colors">
-                  <div className="min-w-0">
-                    <p className="text-sm text-slate-900 font-medium truncate">{inc.description}</p>
-                    <span className="text-xs text-slate-400">
+                <div key={inc.id} className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-100 group hover:bg-slate-100 transition-colors">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[14px] text-slate-900 font-semibold truncate">{inc.description}</p>
+                    <span className="text-[12px] text-slate-500 mt-1 block">
                       {format(new Date(inc.created_at), 'dd MMM', { locale: es })}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 ml-2 flex-shrink-0">
-                    <span className="text-sm font-semibold text-emerald-600">+{formatCOP(inc.amount)}</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="text-[14px] font-bold text-emerald-600 whitespace-nowrap">+{formatCOP(inc.amount)}</span>
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-600"
+                      className="text-slate-400 hover:text-red-600 hover:bg-red-50 sm:opacity-0 sm:group-hover:opacity-100"
                       onClick={() => setDeleteItem({ id: inc.id, type: 'income' })}
+                      aria-label="Eliminar ingreso"
                     >
-                      <Trash2 className="w-3 h-3" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                   </div>
                 </div>
               ))
             )}
           </div>
-          <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between">
-            <span className="text-sm text-slate-500">Total ingresos adicionales</span>
-            <span className="text-sm font-bold text-emerald-600">{formatCOP(totalInc)}</span>
+          <div className="mt-4 pt-4 border-t border-slate-200 flex justify-between items-baseline">
+            <span className="text-[14px] font-medium text-slate-600">Total ingresos adicionales</span>
+            <span className="text-[16px] font-bold text-emerald-600">{formatCOP(totalInc)}</span>
           </div>
         </div>
       </div>

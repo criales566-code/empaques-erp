@@ -124,51 +124,51 @@ export function SaleForm({ products }: { products: Product[] }) {
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
       {/* Product Search */}
       <div className="xl:col-span-2 space-y-4">
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900 mb-3">Buscar productos</h2>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h2 className="text-[15px] font-semibold text-slate-900 mb-4">Buscar productos</h2>
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
             <Input
               placeholder="Buscar por nombre, SKU o código de barras..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-10"
+              className="pl-10 h-11 text-[14px]"
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-72 overflow-y-auto">
             {filtered.map(product => (
               <button
                 key={product.id}
                 type="button"
                 onClick={() => addToCart(product)}
-                className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all text-left group"
+                className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all text-left group"
               >
-                <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center flex-shrink-0">
-                  <Package className="w-4 h-4 text-slate-400 group-hover:text-indigo-500" />
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                  <Package className="w-4 h-4 text-slate-500 group-hover:text-indigo-600" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-slate-900 truncate">{product.name}</p>
-                  <p className="text-xs text-slate-500">{formatCOP(product.sale_price)} · Stock: {product.stock}</p>
+                  <p className="text-[14px] font-semibold text-slate-900 truncate">{product.name}</p>
+                  <p className="text-[12px] text-slate-500 mt-0.5">{formatCOP(product.sale_price)} · Stock: {product.stock}</p>
                 </div>
-                <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-500 flex-shrink-0" />
+                <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 flex-shrink-0" />
               </button>
             ))}
             {filtered.length === 0 && (
-              <div className="col-span-2 text-center py-4 text-slate-400 text-sm">No se encontraron productos</div>
+              <div className="col-span-2 text-center py-6 text-slate-500 text-[14px]">No se encontraron productos</div>
             )}
           </div>
         </div>
 
         {/* Cart */}
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900 mb-3">
-            Carrito ({cart.length} productos)
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h2 className="text-[15px] font-semibold text-slate-900 mb-4">
+            Carrito <span className="text-slate-500 font-medium">({cart.length} productos)</span>
           </h2>
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
-              <ShoppingCart className="w-10 h-10 mb-3 opacity-30" />
-              <p className="text-sm font-medium text-slate-500">El carrito está vacío</p>
-              <p className="text-xs text-slate-400 mt-1">Busca y agrega productos arriba</p>
+            <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-slate-200 rounded-xl">
+              <ShoppingCart className="w-11 h-11 mb-3 text-slate-300" />
+              <p className="text-[14px] font-semibold text-slate-700">El carrito está vacío</p>
+              <p className="text-[13px] text-slate-500 mt-1">Busca y agrega productos arriba</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -176,77 +176,79 @@ export function SaleForm({ products }: { products: Product[] }) {
                 const discounted = item.discount_pct > 0
                 const effPrice = effectivePrice(item)
                 return (
-                  <div key={item.product.id} className="rounded-lg bg-white border border-slate-200 overflow-hidden">
-                    {/* Row 1: name + delete */}
-                    <div className="flex items-center gap-3 px-3 pt-3 pb-1">
+                  <div key={item.product.id} className="rounded-xl bg-white border border-slate-200 overflow-hidden">
+                    {/* Row 1: name + total + delete */}
+                    <div className="flex items-start gap-3 px-4 pt-3.5 pb-2">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-900 truncate">{item.product.name}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">Costo: {formatCOP(item.unit_cost)}</p>
+                        <p className="text-[14px] font-semibold text-slate-900 truncate">{item.product.name}</p>
+                        <p className="text-[12px] text-slate-500 mt-0.5">Costo: {formatCOP(item.unit_cost)}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        {discounted && (
+                          <p className="text-[11px] text-slate-400 line-through leading-none mb-0.5">
+                            {formatCOP(item.unit_price * item.quantity)}
+                          </p>
+                        )}
+                        <p className={`text-[15px] font-bold ${discounted ? 'text-amber-600' : 'text-slate-900'}`}>
+                          {formatCOP(effPrice * item.quantity)}
+                        </p>
                       </div>
                       <button
                         type="button"
                         onClick={() => removeFromCart(item.product.id)}
-                        className="text-slate-300 hover:text-red-500 transition-colors p-1 rounded"
+                        aria-label="Quitar del carrito"
+                        className="text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors p-1.5 rounded-lg shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    {/* Row 2: qty + price + discount + total */}
-                    <div className="flex items-center gap-2 px-3 pb-3 flex-wrap">
-                      {/* Quantity */}
-                      <div className="flex items-center gap-1">
+                    {/* Row 2: grid — qty | price | discount */}
+                    <div className="grid grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto] gap-2 px-4 pb-3.5 items-center">
+                      {/* Quantity stepper */}
+                      <div className="flex items-center gap-1 shrink-0">
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.product.id, -1)}
-                          className="w-8 h-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
+                          aria-label="Disminuir cantidad"
+                          className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-700 transition-colors"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-3.5 h-3.5" />
                         </button>
-                        <span className="w-7 text-center text-sm font-bold text-slate-900">{item.quantity}</span>
+                        <span className="w-8 text-center text-[15px] font-bold text-slate-900">{item.quantity}</span>
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.product.id, 1)}
-                          className="w-8 h-8 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center text-indigo-600 transition-colors"
+                          aria-label="Aumentar cantidad"
+                          className="w-9 h-9 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center text-indigo-700 transition-colors"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
                       {/* Price */}
-                      <div className="flex items-center gap-1 flex-1 min-w-0">
-                        <span className="text-xs text-slate-400 whitespace-nowrap shrink-0">$ unit.</span>
+                      <label className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-[12px] font-medium text-slate-500 whitespace-nowrap shrink-0">Precio</span>
                         <input
                           type="number"
                           value={item.unit_price}
                           onChange={e => updatePrice(item.product.id, parseFloat(e.target.value) || 0)}
                           onFocus={e => e.target.select()}
-                          className="w-full h-8 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
+                          className="w-full h-9 rounded-lg border border-slate-200 bg-white px-2.5 text-[14px] font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
                           min="0"
                         />
-                      </div>
+                      </label>
                       {/* Discount */}
-                      <div className="flex items-center gap-1">
-                        <span className="text-xs text-slate-400 shrink-0">% desc.</span>
+                      <label className="flex items-center gap-1.5 shrink-0">
+                        <span className="text-[12px] font-medium text-slate-500 shrink-0">% desc.</span>
                         <input
                           type="number"
                           value={item.discount_pct}
                           onChange={e => updateDiscount(item.product.id, parseFloat(e.target.value) || 0)}
                           onFocus={e => e.target.select()}
-                          className="w-14 h-8 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400"
+                          className="w-16 h-9 rounded-lg border border-slate-200 bg-white px-2 text-[14px] font-medium text-slate-800 text-center focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400"
                           min="0"
                           max="100"
                         />
-                      </div>
-                      {/* Line total */}
-                      <div className="text-right ml-auto">
-                        {discounted && (
-                          <p className="text-xs text-slate-400 line-through leading-none mb-0.5">
-                            {formatCOP(item.unit_price * item.quantity)}
-                          </p>
-                        )}
-                        <p className={`text-sm font-bold ${discounted ? 'text-amber-600' : 'text-slate-900'}`}>
-                          {formatCOP(effPrice * item.quantity)}
-                        </p>
-                      </div>
+                      </label>
                     </div>
                   </div>
                 )
@@ -258,8 +260,8 @@ export function SaleForm({ products }: { products: Product[] }) {
 
       {/* Checkout */}
       <div className="space-y-4">
-        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-4 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900">Datos de la venta</h2>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4 shadow-sm">
+          <h2 className="text-[15px] font-semibold text-slate-900">Datos de la venta</h2>
           <div className="space-y-2">
             <Label>Cliente (opcional)</Label>
             <Input
@@ -293,52 +295,55 @@ export function SaleForm({ products }: { products: Product[] }) {
         </div>
 
         {/* Order Summary */}
-        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900">Resumen</h2>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Subtotal</span>
-              <span className="text-slate-900">{formatCOP(itemsTotal)}</span>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4 shadow-sm">
+          <h2 className="text-[15px] font-semibold text-slate-900">Resumen</h2>
+          <div className="space-y-3">
+            <div className="flex justify-between items-baseline">
+              <span className="text-[14px] font-medium text-slate-600">Subtotal</span>
+              <span className="text-[14px] font-semibold text-slate-900">{formatCOP(itemsTotal)}</span>
             </div>
 
-            {/* Sale-level discount */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-500 whitespace-nowrap">Descuento venta</span>
-              <div className="flex-1 flex items-center gap-1">
+            {/* Sale-level discount — grid to prevent overlap */}
+            <div className="grid grid-cols-[auto_1fr] gap-2 items-center">
+              <span className="text-[14px] font-medium text-slate-600 whitespace-nowrap">Descuento</span>
+              <div className="flex items-center gap-1.5 min-w-0">
                 <input
                   type="number"
                   value={saleDiscountValue}
                   onChange={e => setSaleDiscountValue(Math.max(0, parseFloat(e.target.value) || 0))}
                   onFocus={e => e.target.select()}
-                  className="w-full h-8 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400"
+                  className="w-full min-w-0 h-9 rounded-lg border border-slate-200 bg-white px-2.5 text-[14px] font-medium text-slate-800 text-right focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400"
                   min="0"
                 />
                 <button
                   type="button"
                   onClick={() => setSaleDiscountType(t => t === 'pct' ? 'amt' : 'pct')}
-                  className="h-8 w-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors shrink-0"
-                  title="Cambiar tipo de descuento"
+                  className="h-9 w-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors shrink-0"
+                  title={saleDiscountType === 'pct' ? 'Porcentaje — clic para cambiar a monto' : 'Monto — clic para cambiar a porcentaje'}
                 >
                   {saleDiscountType === 'pct'
-                    ? <Percent className="w-3.5 h-3.5" />
-                    : <DollarSign className="w-3.5 h-3.5" />
+                    ? <Percent className="w-4 h-4" />
+                    : <DollarSign className="w-4 h-4" />
                   }
                 </button>
               </div>
               {saleDiscountAmt > 0 && (
-                <span className="text-sm font-medium text-amber-600 whitespace-nowrap">
-                  -{formatCOP(saleDiscountAmt)}
-                </span>
+                <>
+                  <span></span>
+                  <span className="text-[13px] font-semibold text-amber-600 text-right">
+                    -{formatCOP(saleDiscountAmt)}
+                  </span>
+                </>
               )}
             </div>
 
-            <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Utilidad estimada</span>
-              <span className="text-emerald-600">{formatCOP(finalProfit)}</span>
+            <div className="flex justify-between items-baseline">
+              <span className="text-[14px] font-medium text-slate-600">Utilidad estimada</span>
+              <span className="text-[14px] font-semibold text-emerald-600">{formatCOP(finalProfit)}</span>
             </div>
-            <div className="border-t border-slate-100 pt-2 flex justify-between">
-              <span className="font-semibold text-slate-900">Total</span>
-              <span className="font-bold text-xl text-slate-900">{formatCOP(finalTotal)}</span>
+            <div className="border-t border-slate-200 pt-3 flex justify-between items-baseline">
+              <span className="text-[15px] font-semibold text-slate-900">Total</span>
+              <span className="font-bold text-2xl text-slate-900 tracking-tight">{formatCOP(finalTotal)}</span>
             </div>
           </div>
           <Button

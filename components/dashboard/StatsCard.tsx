@@ -20,39 +20,39 @@ const iconStyles: Record<string, string> = {
 
 export function StatsCard({ title, value, description, icon: Icon, color, trend }: StatsCardProps) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-md hover:border-slate-300 transition-all duration-150 cursor-default">
+    <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 hover:shadow-md hover:border-slate-300 transition-all duration-150 cursor-default">
       {/* Top row */}
-      <div className="flex items-start justify-between gap-4 mb-5">
-        <p className="text-sm font-medium text-slate-500 leading-snug">{title}</p>
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <p className="text-[13px] font-semibold text-slate-600 uppercase tracking-wide leading-snug">{title}</p>
         <div
           className={cn(
-            'w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
+            'w-10 h-10 rounded-xl flex items-center justify-center shrink-0',
             iconStyles[color]
           )}
         >
-          <Icon className="w-[18px] h-[18px]" />
+          <Icon className="w-5 h-5" />
         </div>
       </div>
 
       {/* Value */}
-      <p className="text-[28px] font-bold text-slate-900 tracking-tight leading-none mb-2.5">
+      <p className="text-[26px] sm:text-[30px] font-bold text-slate-900 tracking-tight leading-tight mb-3 break-words">
         {value}
       </p>
 
       {/* Bottom row */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         {trend && trend !== 'neutral' && (
           <span
             className={cn(
-              'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full',
-              trend === 'up' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'
+              'inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-0.5 rounded-full shrink-0',
+              trend === 'up' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
             )}
           >
             {trend === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
           </span>
         )}
         {description && (
-          <p className="text-xs text-slate-400 truncate">{description}</p>
+          <p className="text-[13px] text-slate-500 truncate">{description}</p>
         )}
       </div>
     </div>
