@@ -159,7 +159,7 @@ export default async function DashboardPage() {
           {/* Financial summary — emerald accent */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="h-1 w-full bg-emerald-500" />
-            <div className="p-6 sm:p-7">
+            <div className="p-7 sm:p-8">
               <div className="flex items-center gap-2.5 mb-6">
                 <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
                   <DollarSign className="w-[18px] h-[18px] text-emerald-600" />
@@ -194,7 +194,7 @@ export default async function DashboardPage() {
           {/* Inventory status — amber accent */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="h-1 w-full bg-amber-500" />
-            <div className="p-6 sm:p-7">
+            <div className="p-7 sm:p-8">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">

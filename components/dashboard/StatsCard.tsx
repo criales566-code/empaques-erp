@@ -35,9 +35,9 @@ export function StatsCard({ title, value, subtitle, icon: Icon, color, trendPct,
       {/* Top color accent */}
       <div className={cn('h-1 w-full', c.accent)} />
 
-      <div className="p-6">
+      <div className="p-7 sm:p-8">
         {/* Header: label + icon */}
-        <div className="flex items-start justify-between gap-3 mb-5">
+        <div className="flex items-start justify-between gap-3 mb-6">
           <p className="text-[13px] font-semibold text-slate-600 leading-tight">{title}</p>
           <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0', c.iconBg)}>
             <Icon className={cn('w-[18px] h-[18px]', c.iconColor)} />
@@ -50,7 +50,7 @@ export function StatsCard({ title, value, subtitle, icon: Icon, color, trendPct,
         </p>
 
         {/* Trend + subtitle */}
-        <div className="flex items-center gap-2 mt-3 mb-5 flex-wrap min-h-[22px]">
+        <div className="flex items-center gap-2 mt-4 mb-6 flex-wrap min-h-[22px]">
           {trendPct != null && (
             <span
               className={cn(
