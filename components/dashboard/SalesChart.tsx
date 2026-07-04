@@ -70,33 +70,33 @@ export function SalesChart({ sales, expenses }: SalesChartProps) {
   }, [sales, expenses])
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm h-full">
-      <h3 className="text-[15px] font-semibold text-slate-900 mb-5">Ventas vs Gastos (últimos 6 meses)</h3>
-      <ResponsiveContainer width="100%" height={260}>
-        <BarChart data={data} barGap={6} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+    <div className="h-full">
+      <ResponsiveContainer width="100%" height={320}>
+        <BarChart data={data} barGap={8} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#ececec" vertical={false} />
           <XAxis
             dataKey="mes"
-            tick={{ fill: '#475569', fontSize: 12, fontWeight: 500 }}
+            tick={{ fill: '#737373', fontSize: 12, fontWeight: 500 }}
             axisLine={false}
             tickLine={false}
-            dy={5}
+            dy={8}
           />
           <YAxis
             tickFormatter={v => formatCOPCompact(v)}
-            tick={{ fill: '#64748b', fontSize: 11 }}
+            tick={{ fill: '#a3a3a3', fontSize: 11 }}
             axisLine={false}
             tickLine={false}
             width={70}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99,102,241,0.06)' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
           <Legend
-            wrapperStyle={{ fontSize: '13px', color: '#475569', paddingTop: '16px', fontWeight: 500 }}
+            wrapperStyle={{ fontSize: '13px', color: '#737373', paddingTop: '20px', fontWeight: 500 }}
             iconType="circle"
+            iconSize={8}
           />
-          <Bar dataKey="Ventas" fill="#6366f1" radius={[6, 6, 0, 0]} />
-          <Bar dataKey="Gastos" fill="#ef4444" radius={[6, 6, 0, 0]} />
-          <Bar dataKey="Utilidad" fill="#10b981" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="Ventas" fill="#0a0a0a" radius={[2, 2, 0, 0]} />
+          <Bar dataKey="Gastos" fill="#d4d4d4" radius={[2, 2, 0, 0]} />
+          <Bar dataKey="Utilidad" fill="#737373" radius={[2, 2, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
