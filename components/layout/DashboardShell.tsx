@@ -12,7 +12,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0 overflow-auto">
         <Header onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 px-4 py-6 sm:px-6 md:px-8 md:py-8 animate-fade-in">
+        <main className="flex-1 px-5 py-8 sm:px-8 md:px-12 md:py-10 lg:px-14 lg:py-12 animate-fade-in">
           <div className="max-w-[1400px] mx-auto">
             {children}
           </div>

@@ -72,9 +72,9 @@ export function SalesChart({ sales, expenses }: SalesChartProps) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white shadow-sm h-full overflow-hidden">
       <div className="h-1 w-full bg-indigo-500" />
-      <div className="p-5 sm:p-6">
-      <div className="flex items-baseline justify-between mb-5 gap-3 flex-wrap">
-        <h3 className="text-[15px] font-semibold text-slate-900">Ventas vs Gastos</h3>
+      <div className="p-6 sm:p-8">
+      <div className="flex items-baseline justify-between mb-6 gap-3 flex-wrap">
+        <h3 className="text-[16px] font-semibold text-slate-900">Ventas vs Gastos</h3>
         <span className="text-[12px] font-medium text-slate-500">Últimos 6 meses</span>
       </div>
       <ResponsiveContainer width="100%" height={260}>

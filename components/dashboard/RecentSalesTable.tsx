@@ -24,7 +24,7 @@ export function RecentSalesTable({ sales }: { sales: Sale[] }) {
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
       <div className="h-1 w-full bg-indigo-500" />
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 px-5 sm:px-6 py-4 border-b border-slate-100">
+      <div className="flex items-center justify-between gap-3 px-6 sm:px-7 py-5 border-b border-slate-100">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
             <ShoppingCart className="w-4 h-4 text-indigo-600" />
@@ -68,7 +68,7 @@ export function RecentSalesTable({ sales }: { sales: Sale[] }) {
           {sales.map((sale) => (
             <div
               key={sale.id}
-              className="flex items-center gap-3 sm:gap-4 px-5 sm:px-6 py-3.5 border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors"
+              className="flex items-center gap-3 sm:gap-4 px-6 sm:px-7 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors"
             >
               <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 text-slate-700 text-[14px] font-bold">
                 {(sale.customer_name ?? 'C').slice(0, 1).toUpperCase()}

@@ -104,7 +104,7 @@ export default async function DashboardPage() {
   const today = format(new Date(), "d 'de' MMMM, yyyy", { locale: es })
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-10 md:space-y-12">
       {/* Page heading */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
@@ -141,32 +141,32 @@ export default async function DashboardPage() {
       )}
 
       {/* KPI row with sparklines */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 md:gap-6">
         {stats.map((stat) => (
           <StatsCard key={stat.title} {...stat} />
         ))}
       </div>
 
       {/* Chart + right rail */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 md:gap-8">
         {/* Chart */}
         <div className="xl:col-span-2">
           <SalesChart sales={sales} expenses={expenses} />
         </div>
 
         {/* Right rail */}
-        <div className="space-y-5">
+        <div className="space-y-6 md:space-y-8">
           {/* Financial summary — emerald accent */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="h-1 w-full bg-emerald-500" />
-            <div className="p-6">
-              <div className="flex items-center gap-2.5 mb-5">
-                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
-                  <DollarSign className="w-4 h-4 text-emerald-600" />
+            <div className="p-6 sm:p-7">
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                  <DollarSign className="w-[18px] h-[18px] text-emerald-600" />
                 </div>
-                <h3 className="text-[15px] font-semibold text-slate-900">Resumen financiero</h3>
+                <h3 className="text-[16px] font-semibold text-slate-900">Resumen financiero</h3>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {[
                   { label: 'Ingresos', value: totalRev, color: 'text-emerald-700', bar: 'bg-emerald-500', pct: 100 },
                   { label: 'Gastos', value: totalExp, color: 'text-red-700', bar: 'bg-red-500', pct: totalRev > 0 ? Math.min(100, (totalExp / totalRev) * 100) : 0 },
@@ -194,13 +194,13 @@ export default async function DashboardPage() {
           {/* Inventory status — amber accent */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="h-1 w-full bg-amber-500" />
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-5">
+            <div className="p-6 sm:p-7">
+              <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                    <Package className="w-4 h-4 text-amber-600" />
+                  <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+                    <Package className="w-[18px] h-[18px] text-amber-600" />
                   </div>
-                  <h3 className="text-[15px] font-semibold text-slate-900">Estado del inventario</h3>
+                  <h3 className="text-[16px] font-semibold text-slate-900">Estado del inventario</h3>
                 </div>
                 <Link
                   href="/inventory"
@@ -211,12 +211,12 @@ export default async function DashboardPage() {
               </div>
 
               {/* Big number */}
-              <div className="mb-5 pb-5 border-b border-slate-100">
+              <div className="mb-6 pb-6 border-b border-slate-100">
                 <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-1">SKUs totales</p>
                 <p className="text-[32px] font-bold text-slate-900 tabular-nums leading-none">{products.length}</p>
               </div>
 
-              <div className="space-y-3 mb-4">
+              <div className="space-y-4 mb-5">
                 {[
                   { label: 'En stock', count: inStock, dot: 'bg-emerald-500', text: 'text-emerald-700', pct: products.length ? (inStock / products.length) * 100 : 0 },
                   { label: 'Stock bajo', count: lowStock.length, dot: 'bg-amber-500', text: 'text-amber-700', pct: products.length ? (lowStock.length / products.length) * 100 : 0 },
@@ -257,7 +257,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recent activity */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
         <RecentSalesTable sales={sales.slice(0, 5)} />
         <RecentExpensesTable expenses={expenses.slice(0, 5)} />
       </div>
