@@ -70,8 +70,13 @@ export function SalesChart({ sales, expenses }: SalesChartProps) {
   }, [sales, expenses])
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm h-full">
-      <h3 className="text-[15px] font-semibold text-slate-900 mb-5">Ventas vs Gastos (últimos 6 meses)</h3>
+    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm h-full overflow-hidden">
+      <div className="h-1 w-full bg-indigo-500" />
+      <div className="p-5 sm:p-6">
+      <div className="flex items-baseline justify-between mb-5 gap-3 flex-wrap">
+        <h3 className="text-[15px] font-semibold text-slate-900">Ventas vs Gastos</h3>
+        <span className="text-[12px] font-medium text-slate-500">Últimos 6 meses</span>
+      </div>
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data} barGap={6} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
@@ -99,6 +104,7 @@ export function SalesChart({ sales, expenses }: SalesChartProps) {
           <Bar dataKey="Utilidad" fill="#10b981" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
+      </div>
     </div>
   )
 }

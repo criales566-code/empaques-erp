@@ -7,7 +7,8 @@ import { Receipt, ArrowRight, Plus } from 'lucide-react'
 
 export function RecentExpensesTable({ expenses }: { expenses: Expense[] }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="h-1 w-full bg-red-500" />
       {/* Header */}
       <div className="flex items-center justify-between gap-3 px-5 sm:px-6 py-4 border-b border-slate-100">
         <div className="flex items-center gap-2.5 min-w-0">
