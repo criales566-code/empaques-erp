@@ -56,6 +56,7 @@ export default async function DashboardPage() {
   const lowStock = products.filter((p) => p.stock > 0 && p.stock <= p.minimum_stock)
   const inStock = products.length - outOfStock.length - lowStock.length
 
+  // KPI trends
   const trendTodayVsYest = pctChange(totalSales(salesToday), totalSales(salesYesterday))
   const trendMonthVsLast = pctChange(totalSales(salesMonth), totalSales(salesLastMonth))
   const profitSeries = monthlyProfitSeries(sales, 6)
@@ -103,11 +104,11 @@ export default async function DashboardPage() {
   const today = format(new Date(), "d 'de' MMMM, yyyy", { locale: es })
 
   return (
-    <div className="flex flex-col gap-6 lg:gap-8">
+    <div className="space-y-10 md:space-y-12">
       {/* Page heading */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
+          <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">
             Resumen general
           </p>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
@@ -117,7 +118,7 @@ export default async function DashboardPage() {
 
       {/* Alert banners */}
       {(outOfStock.length > 0 || lowStock.length > 0) && (
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2.5">
           {outOfStock.length > 0 && (
             <Link
               href="/inventory"
@@ -139,31 +140,33 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* KPI row — 4 cols desktop, 2 tablet, 1 mobile */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      {/* KPI row with sparklines */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 md:gap-6">
         {stats.map((stat) => (
           <StatsCard key={stat.title} {...stat} />
         ))}
       </div>
 
-      {/* Chart (2/3) + right rail (1/3) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-        <div className="lg:col-span-2">
+      {/* Chart + right rail */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 md:gap-8">
+        {/* Chart */}
+        <div className="xl:col-span-2">
           <SalesChart sales={sales} expenses={expenses} />
         </div>
 
-        <div className="flex flex-col gap-4 lg:gap-6">
-          {/* Resumen financiero */}
+        {/* Right rail */}
+        <div className="space-y-6 md:space-y-8">
+          {/* Financial summary — emerald accent */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="h-1 w-full bg-emerald-500" />
-            <div className="p-6">
+            <div className="p-7 sm:p-8">
               <div className="flex items-center gap-2.5 mb-6">
                 <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
                   <DollarSign className="w-[18px] h-[18px] text-emerald-600" />
                 </div>
-                <h3 className="text-[15px] font-semibold text-slate-900">Resumen financiero</h3>
+                <h3 className="text-[16px] font-semibold text-slate-900">Resumen financiero</h3>
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="space-y-5">
                 {[
                   { label: 'Ingresos', value: totalRev, color: 'text-emerald-700', bar: 'bg-emerald-500', pct: 100 },
                   { label: 'Gastos', value: totalExp, color: 'text-red-700', bar: 'bg-red-500', pct: totalRev > 0 ? Math.min(100, (totalExp / totalRev) * 100) : 0 },
@@ -176,7 +179,7 @@ export default async function DashboardPage() {
                         {formatCOP(item.value)}
                       </span>
                     </div>
-                    <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${item.bar}`}
                         style={{ width: `${item.pct}%` }}
@@ -188,39 +191,39 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Estado del inventario */}
+          {/* Inventory status — amber accent */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="h-1 w-full bg-amber-500" />
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6 gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-7 sm:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                     <Package className="w-[18px] h-[18px] text-amber-600" />
                   </div>
-                  <h3 className="text-[15px] font-semibold text-slate-900 truncate">Estado del inventario</h3>
+                  <h3 className="text-[16px] font-semibold text-slate-900">Estado del inventario</h3>
                 </div>
                 <Link
                   href="/inventory"
-                  className="text-[13px] text-indigo-600 hover:text-indigo-700 font-semibold transition-colors shrink-0"
+                  className="text-[13px] text-indigo-600 hover:text-indigo-700 font-semibold transition-colors"
                 >
                   Ver todo
                 </Link>
               </div>
 
               {/* Big number */}
-              <div className="mb-5 pb-5 border-b border-slate-100">
+              <div className="mb-6 pb-6 border-b border-slate-100">
                 <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-1">SKUs totales</p>
                 <p className="text-[32px] font-bold text-slate-900 tabular-nums leading-none">{products.length}</p>
               </div>
 
-              <div className="flex flex-col gap-3 mb-4">
+              <div className="space-y-4 mb-5">
                 {[
                   { label: 'En stock', count: inStock, dot: 'bg-emerald-500', text: 'text-emerald-700', pct: products.length ? (inStock / products.length) * 100 : 0 },
                   { label: 'Stock bajo', count: lowStock.length, dot: 'bg-amber-500', text: 'text-amber-700', pct: products.length ? (lowStock.length / products.length) * 100 : 0 },
                   { label: 'Agotados', count: outOfStock.length, dot: 'bg-red-500', text: 'text-red-700', pct: products.length ? (outOfStock.length / products.length) * 100 : 0 },
                 ].map((item) => (
                   <div key={item.label} className="flex items-center gap-3">
-                    <span className={`w-2 h-2 rounded-full shrink-0 ${item.dot}`} />
+                    <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${item.dot}`} />
                     <span className="text-[14px] font-medium text-slate-700 flex-1">{item.label}</span>
                     <span className="text-[12px] text-slate-500 tabular-nums">{item.pct.toFixed(0)}%</span>
                     <span className={`text-[15px] font-bold tabular-nums ${item.text} w-8 text-right`}>{item.count}</span>
@@ -229,7 +232,7 @@ export default async function DashboardPage() {
               </div>
 
               {products.length > 0 && (
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden flex">
+                <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
                   <div className="bg-emerald-500 h-full transition-all" style={{ width: `${(inStock / products.length) * 100}%` }} />
                   <div className="bg-amber-500 h-full transition-all" style={{ width: `${(lowStock.length / products.length) * 100}%` }} />
                   <div className="bg-red-500 h-full transition-all" style={{ width: `${(outOfStock.length / products.length) * 100}%` }} />
@@ -254,7 +257,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recent activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
         <RecentSalesTable sales={sales.slice(0, 5)} />
         <RecentExpensesTable expenses={expenses.slice(0, 5)} />
       </div>

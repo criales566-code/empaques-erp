@@ -31,49 +31,50 @@ export function StatsCard({ title, value, subtitle, icon: Icon, color, trendPct,
   const TrendIcon = trendDir === 'up' ? TrendingUp : trendDir === 'down' ? TrendingDown : Minus
 
   return (
-    <div className="relative bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md hover:border-slate-300 transition-all duration-150">
+    <div className="relative bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md hover:border-slate-300 transition-all duration-150 group">
+      {/* Top color accent */}
       <div className={cn('h-1 w-full', c.accent)} />
 
-      <div className="p-6 flex flex-col gap-4 min-h-[200px]">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-3">
+      <div className="p-7 sm:p-8">
+        {/* Header: label + icon */}
+        <div className="flex items-start justify-between gap-3 mb-6">
           <p className="text-[13px] font-semibold text-slate-600 leading-tight">{title}</p>
           <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0', c.iconBg)}>
             <Icon className={cn('w-[18px] h-[18px]', c.iconColor)} />
           </div>
         </div>
 
-        {/* Value */}
-        <div className="flex flex-col gap-2">
-          <p className="text-[26px] lg:text-[28px] font-bold text-slate-900 tracking-tight leading-tight tabular-nums break-anywhere">
-            {value}
-          </p>
-          <div className="flex items-center gap-2 flex-wrap min-h-[22px]">
-            {trendPct != null && (
-              <span
-                className={cn(
-                  'inline-flex items-center gap-0.5 text-[12px] font-bold px-1.5 py-0.5 rounded-md tabular-nums',
-                  trendDir === 'up' && 'bg-emerald-50 text-emerald-700',
-                  trendDir === 'down' && 'bg-red-50 text-red-700',
-                  trendDir === 'flat' && 'bg-slate-100 text-slate-600'
-                )}
-              >
-                <TrendIcon className="w-3 h-3" />
-                {trendDir === 'flat' ? '0%' : `${trendPct > 0 ? '+' : ''}${trendPct.toFixed(1)}%`}
-              </span>
-            )}
-            {subtitle && (
-              <p className="text-[12px] text-slate-500 truncate">{subtitle}</p>
-            )}
-          </div>
-        </div>
+        {/* Value XL */}
+        <p className="text-[28px] font-bold text-slate-900 tracking-tight leading-tight tabular-nums break-words">
+          {value}
+        </p>
 
-        {/* Sparkline pushed to bottom */}
-        <div className="mt-auto -mx-1 h-10">
-          {sparklineData && sparklineData.length > 1 && (
-            <Sparkline data={sparklineData} color={c.sparkColor} height={40} />
+        {/* Trend + subtitle */}
+        <div className="flex items-center gap-2 mt-4 mb-6 flex-wrap min-h-[22px]">
+          {trendPct != null && (
+            <span
+              className={cn(
+                'inline-flex items-center gap-0.5 text-[12px] font-bold px-1.5 py-0.5 rounded-md tabular-nums',
+                trendDir === 'up' && 'bg-emerald-50 text-emerald-700',
+                trendDir === 'down' && 'bg-red-50 text-red-700',
+                trendDir === 'flat' && 'bg-slate-100 text-slate-600'
+              )}
+            >
+              <TrendIcon className="w-3 h-3" />
+              {trendDir === 'flat' ? '0%' : `${trendPct > 0 ? '+' : ''}${trendPct.toFixed(1)}%`}
+            </span>
+          )}
+          {subtitle && (
+            <p className="text-[12px] text-slate-500 truncate">{subtitle}</p>
           )}
         </div>
+
+        {/* Sparkline */}
+        {sparklineData && sparklineData.length > 1 && (
+          <div className="-mx-1">
+            <Sparkline data={sparklineData} color={c.sparkColor} height={40} />
+          </div>
+        )}
       </div>
     </div>
   )

@@ -70,42 +70,40 @@ export function SalesChart({ sales, expenses }: SalesChartProps) {
   }, [sales, expenses])
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm h-full overflow-hidden">
       <div className="h-1 w-full bg-indigo-500" />
-      <div className="p-6">
-        <div className="flex items-baseline justify-between mb-6 gap-3 flex-wrap">
-          <h3 className="text-[16px] font-semibold text-slate-900">Ventas vs Gastos</h3>
-          <span className="text-[12px] font-medium text-slate-500">Últimos 6 meses</span>
-        </div>
-        <div className="w-full h-[320px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} barGap={6} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-              <XAxis
-                dataKey="mes"
-                tick={{ fill: '#475569', fontSize: 12, fontWeight: 500 }}
-                axisLine={false}
-                tickLine={false}
-                dy={5}
-              />
-              <YAxis
-                tickFormatter={v => formatCOPCompact(v)}
-                tick={{ fill: '#64748b', fontSize: 11 }}
-                axisLine={false}
-                tickLine={false}
-                width={70}
-              />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99,102,241,0.06)' }} />
-              <Legend
-                wrapperStyle={{ fontSize: '13px', color: '#475569', paddingTop: '16px', fontWeight: 500 }}
-                iconType="circle"
-              />
-              <Bar dataKey="Ventas" fill="#6366f1" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="Gastos" fill="#ef4444" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="Utilidad" fill="#10b981" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      <div className="p-7 sm:p-8 lg:p-10">
+      <div className="flex items-baseline justify-between mb-8 gap-3 flex-wrap">
+        <h3 className="text-[16px] font-semibold text-slate-900">Ventas vs Gastos</h3>
+        <span className="text-[12px] font-medium text-slate-500">Últimos 6 meses</span>
+      </div>
+      <ResponsiveContainer width="100%" height={260}>
+        <BarChart data={data} barGap={6} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+          <XAxis
+            dataKey="mes"
+            tick={{ fill: '#475569', fontSize: 12, fontWeight: 500 }}
+            axisLine={false}
+            tickLine={false}
+            dy={5}
+          />
+          <YAxis
+            tickFormatter={v => formatCOPCompact(v)}
+            tick={{ fill: '#64748b', fontSize: 11 }}
+            axisLine={false}
+            tickLine={false}
+            width={70}
+          />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99,102,241,0.06)' }} />
+          <Legend
+            wrapperStyle={{ fontSize: '13px', color: '#475569', paddingTop: '16px', fontWeight: 500 }}
+            iconType="circle"
+          />
+          <Bar dataKey="Ventas" fill="#6366f1" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="Gastos" fill="#ef4444" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="Utilidad" fill="#10b981" radius={[6, 6, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
       </div>
     </div>
   )
