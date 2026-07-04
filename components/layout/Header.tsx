@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Menu } from 'lucide-react'
+import { Menu, Bell } from 'lucide-react'
 
 const routeLabels: Record<string, string> = {
   '/': 'Dashboard',
@@ -26,23 +26,33 @@ export function Header({ onMenuClick }: HeaderProps) {
     )?.[1] ?? 'ERP'
 
   return (
-    <header className="h-16 shrink-0 bg-white flex items-center gap-3 px-6 md:px-10 lg:hidden">
+    <header className="h-16 shrink-0 border-b border-slate-200 bg-white/95 backdrop-blur-sm flex items-center gap-3 px-4 md:px-6 sticky top-0 z-30">
       <button
         onClick={onMenuClick}
         aria-label="Abrir menú"
-        className="-ml-1 p-2 rounded text-neutral-500 hover:text-neutral-900 transition-colors"
+        className="lg:hidden -ml-1 p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
       >
         <Menu className="w-5 h-5" />
       </button>
 
-      <span className="text-[14px] font-medium text-neutral-900 flex-1 truncate">{currentLabel}</span>
+      <h1 className="text-base font-semibold text-slate-900 flex-1 truncate">{currentLabel}</h1>
 
-      <span className="flex items-center gap-1.5">
-        <span className="relative flex h-1.5 w-1.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neutral-900 opacity-40" />
-          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-neutral-900" />
-        </span>
-      </span>
+      <div className="flex items-center gap-2">
+        <button
+          aria-label="Notificaciones"
+          className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+        >
+          <Bell className="w-[18px] h-[18px]" />
+        </button>
+        <div className="w-px h-5 bg-slate-200 mx-1" />
+        <div className="flex items-center gap-2 pl-1">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+          </span>
+          <span className="text-[13px] font-medium text-slate-600 hidden sm:block">En línea</span>
+        </div>
+      </div>
     </header>
   )
 }

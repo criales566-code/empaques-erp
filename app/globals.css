@@ -31,43 +31,31 @@ html {
 }
 
 body {
-  background-color: #ffffff;
-  color: #0a0a0a;
+  background-color: #f8fafc;
+  color: #0f172a;
   font-family: var(--font-inter), sans-serif;
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-feature-settings: "cv11", "ss01";
 }
 
-/* Editorial-style headings */
+/* Legible defaults for headings */
 h1, h2, h3, h4 {
-  color: #0a0a0a;
-  letter-spacing: -0.025em;
-  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.01em;
 }
-
-/* Tabular numbers everywhere — for prices, KPIs */
-.tabular { font-variant-numeric: tabular-nums; }
 
 /* Focus visible for keyboard nav */
 :focus-visible {
-  outline: 1.5px solid #0a0a0a;
-  outline-offset: 3px;
-  border-radius: 4px;
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 /* Prevent text overflow */
 p, span, div {
   overflow-wrap: anywhere;
-}
-
-/* Editorial divider */
-.divider {
-  height: 1px;
-  background: #ececec;
-  border: 0;
 }
 
 /* Scrollbar */
