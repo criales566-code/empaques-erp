@@ -53,9 +53,13 @@ h1, h2, h3, h4 {
   border-radius: 6px;
 }
 
-/* Prevent text overflow */
-p, span, div {
-  overflow-wrap: anywhere;
+/* Prevent overflow only where explicitly needed */
+.break-anywhere { overflow-wrap: anywhere; }
+
+/* Normal text wrapping — words don't break unless needed */
+p, span, h1, h2, h3, h4 {
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 /* Scrollbar */
